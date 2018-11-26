@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate home page</title>
+</head>
+<body>
+    <table>
+        <tr>
+        {% for header in nice_headers[1:5] %}
+            <th>{{ header }}</th>
+        {% endfor %}
+        </tr>
+        {% for row in questions %}
+            <tr>
+            {% for header in headers[1:5] %}
+                {% if header == "title" %}
+                <td> <a href="/question/{{ row['id'] }}" >{{row[header]}} </a></td>
+                {% else %}
+                <td> {{row[header]}} </td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

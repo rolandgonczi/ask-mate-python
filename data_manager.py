@@ -5,6 +5,8 @@ QUESTIONS_FILE_PATH = os.getenv('QUESTIONS_FILE_PATH') if 'QUESTIONS_FILE_PATH' 
 ANSWERS_FILE_PATH = os.getenv('ANSWERS_FILE_PATH') if 'ANSWERS_FILE_PATH' in os.environ else 'sample_data/answer.csv'
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
+QUESTIONS_HEADER_NICE = ["ID", "Submission time", "View number", "Vote number", "Title", "Message", "Image"]
+ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "Message", "Image"]
 
 
 def get_all_questions():

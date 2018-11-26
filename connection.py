@@ -16,3 +16,13 @@ def find_first_by_header(file_path, header, value):
         for record in csv_reader:
             if record[header] == value:
                 return record
+
+
+def find_all_by_header(file_path, header, value):
+    all_by_header = []
+    with open(file_path) as data_base:
+        csv_reader = csv.DictReader(data_base)
+        for record in csv_reader:
+            if record[header] == value:
+                all_by_header.append(record)
+    return all_by_header
