@@ -12,14 +12,25 @@ ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "M
 def get_all_questions():
     return connection.read_all(QUESTIONS_FILE_PATH)
 
+
 def get_all_answers():
     return connection.read_all(ANSWERS_FILE_PATH)
 
+
 def get_specific_question(id_):
     return connection.find_first_by_header(QUESTIONS_FILE_PATH, QUESTIONS_HEADER[0], id_)
+
 
 def get_specific_answer(id_):
     return connection.find_first_by_header(ANSWERS_FILE_PATH, ANSWERS_HEADER[0], id_)
 
 
+def calculate_max_id(data):
+    list_of_data = data
+    max_id_number = 0
+    for keys in list_of_data:
+        if int(keys["id"]) > max_id_number:
+            max_id_number = int(keys["id"])
+        max_id_number += 1
+    return max_id_number
 
