@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate | New answer to {{ question["title"] }}</title>
+</head>
+<body>
+    <h1>Add a new answer to {{ question["title"] }}</h1>
+    <p>{{ question['message'] }}</p>
+    <form action="/question/{{ question['id'] }}/new-answer/" method="post">
+        <p><label>
+            Answer<br>
+            <textarea rows="4" cols="40" name="message" minlength="10">Your answer</textarea>
+        </label></p>
+        <p><label>
+            Image(optional)<br>
+            <input type="url" name="image">
+        </label></p>
+        <p><label>
+            <input type="submit" value="Submit answer" name="submit">
+        </label></p>
+    </form>
+</body>
+</html>

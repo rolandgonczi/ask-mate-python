@@ -43,3 +43,7 @@ def save_new_question(question):
     connection.save_record_into_file(QUESTIONS_FILE_PATH, question, QUESTIONS_HEADER)
 
 
+def save_new_answer(answer):
+    connection.save_record_into_file(ANSWERS_FILE_PATH, answer, ANSWERS_HEADER)
+
+

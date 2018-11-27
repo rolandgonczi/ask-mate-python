@@ -31,6 +31,7 @@
     {% if question['image'] %}
     <p><img src="{{ question['image'] }}"></p>
     {% endif %}
+    <p><a href="/question/{{ question['id'] }}/new-answer/">Add new answer</a></p>
     <h2>Answers:</h2>
     {% if answers %}
         {% for answer in answers %}

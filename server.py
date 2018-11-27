@@ -42,9 +42,22 @@ def ask_question():
         return redirect('/')
 
 
-@app.route('/question/<question_id>/new-answer')
-def new_answer():
-    return none
+@app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
+def new_answer(question_id):
+    if request.method == "GET":
+        question = data_manager.get_specific_question(question_id)
+        return render_template("new_answer.html", question=question)
+    if request.method == "POST":
+        answer = {}
+        for key in request.form:
+            if key in data_manager.ANSWERS_HEADER:
+                answer[key] = request.form[key]
+        answer["question_id"] = question_id
+        answer["submission_time"] = int(time.time())
+        answer["vote_number"] = 0
+        answer["id"] = data_manager.calculate_new_id(data_manager.get_all_answers())
+        data_manager.save_new_answer(answer)
+        return redirect('/question/{}'.format(question_id))
 
 
 if __name__ == '__main__':
