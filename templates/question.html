@@ -31,5 +31,34 @@
     {% if question['image'] %}
     <p><img src="{{ question['image'] }}"></p>
     {% endif %}
+    <h2>Answers:</h2>
+    {% if answers %}
+        {% for answer in answers %}
+        <h3>Answer #{{ answer['id'] }}</h3>
+        <p>{{ answer['message'] }}</p>
+        <table>
+            <tr>
+                <th>
+                    Submission Time:
+                </th>
+                <td>
+                    {{ answer['submission_time'] }}
+                </td>
+                <th>
+                    Vote Number:
+                </th>
+                <td>
+                    {{ answer['vote_number'] }}
+                </td>
+            </tr>
+        </table>
+        {% if answer['image'] %}
+        <p><img src="{{ answer['image'] }}"></p>
+        {% endif %}
+        <br>
+        {% endfor %}
+    {% else %}
+    <p>No answers yet.</p>
+    {% endif %}
 </body>
 </html>

@@ -18,19 +18,28 @@ def get_all_answers():
 
 
 def get_specific_question(id_):
-    return connection.find_first_by_header(QUESTIONS_FILE_PATH, "id", str(id_))
+    return connection.find_first_by_header(QUESTIONS_FILE_PATH, "id", id_)
 
 
 def get_specific_answer(id_):
     return connection.find_first_by_header(ANSWERS_FILE_PATH, ANSWERS_HEADER[0], id_)
 
 
-def calculate_max_id(data):
+def get_all_answers_by_question_id(question_id):
+    return connection.find_all_by_header(ANSWERS_FILE_PATH, "question_id", question_id)
+
+
+def calculate_new_id(data):
     list_of_data = data
-    max_id_number = 0
+    new_id_number = 0
     for keys in list_of_data:
-        if int(keys["id"]) > max_id_number:
-            max_id_number = int(keys["id"])
-        max_id_number += 1
-    return max_id_number
+        if int(keys["id"]) > new_id_number:
+            new_id_number = int(keys["id"])
+        new_id_number += 1
+    return new_id_number
+
+
+def save_new_question(question):
+    connection.save_record_into_file(QUESTIONS_FILE_PATH, question, QUESTIONS_HEADER)
+
 

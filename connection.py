@@ -26,3 +26,9 @@ def find_all_by_header(file_path, header, value):
             if record[header] == value:
                 all_by_header.append(record)
     return all_by_header
+
+
+def save_record_into_file(file_path, record, headers):
+    with open(file_path, "a") as f:
+        csv_writer = csv.DictWriter(f, headers)
+        csv_writer.writerow(record)
