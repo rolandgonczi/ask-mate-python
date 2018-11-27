@@ -17,6 +17,12 @@ def list_messages():
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
 
 
+@app.route('/question/<int:question_id>')
+def show_question(question_id):
+    question = data_manager.get_specific_question(question_id)
+    return render_template("question.html", question=question)
+
+
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

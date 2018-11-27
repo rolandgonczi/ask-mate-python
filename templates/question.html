@@ -4,6 +4,32 @@
     <title>AskMate | {{ question['title'] }}</title>
 </head>
 <body>
-
+    <h1>{{ question['title'] }}</h1>
+    <p>{{ question['message'] }}</p>
+    <table>
+        <tr>
+            <th>
+                Submission Time:
+            </th>
+            <td>
+                {{ question['submission_time'] }}
+            </td>
+            <th>
+                View Number:
+            </th>
+            <td>
+                {{ question['view_number'] }}
+            </td>
+            <th>
+                Vote Number:
+            </th>
+            <td>
+                {{ question['vote_number'] }}
+            </td>
+        </tr>
+    </table>
+    {% if question['image'] %}
+    <p><img src="{{ question['image'] }}"></p>
+    {% endif %}
 </body>
 </html>

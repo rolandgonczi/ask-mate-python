@@ -18,7 +18,7 @@ def get_all_answers():
 
 
 def get_specific_question(id_):
-    return connection.find_first_by_header(QUESTIONS_FILE_PATH, QUESTIONS_HEADER[0], id_)
+    return connection.find_first_by_header(QUESTIONS_FILE_PATH, "id", str(id_))
 
 
 def get_specific_answer(id_):
