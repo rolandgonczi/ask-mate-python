@@ -43,7 +43,7 @@
                 </table>
             </td>
         </tr>
-    <p><a href="/question/{{ question['id'] }}/delete"><strong>delete question</strong></a></p>
+    <p><a href="/question/{{ question['id'] }}/delete"><strong>Delete question</strong></a></p>
     </table>
     {% if question['image'] %}
     <p><img src="{{ question['image'] }}"></p>
@@ -91,6 +91,7 @@
         <p><img src="{{ answer['image'] }}"></p>
         {% endif %}
         <br>
+        <p><a href="/answer/{{ answer['id'] }}/delete">Delete answer</a></p>
         {% endfor %}
     {% else %}
     <p>No answers yet.</p>
