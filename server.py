@@ -53,7 +53,7 @@ def edit_question(question_id):
         new_question = request.form
         question.update(new_question)
         data_manager.update_question(question)
-        return redirect('/')
+        return redirect('/question/' + question_id)
 
 
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
