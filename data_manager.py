@@ -5,7 +5,9 @@ QUESTIONS_FILE_PATH = os.getenv('QUESTIONS_FILE_PATH') if 'QUESTIONS_FILE_PATH' 
 ANSWERS_FILE_PATH = os.getenv('ANSWERS_FILE_PATH') if 'ANSWERS_FILE_PATH' in os.environ else 'sample_data/answer.csv'
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
-QUESTIONS_HEADER_NICE = ["ID", "Submission time", "View number", "Vote number", "Title", "Message", "Image"]
+QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
+                         'view_number': "View number", 'vote_number': "Vote number",
+                         'title': "Title", 'message': "Message", 'image': "Image"}
 ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "Message", "Image"]
 
 
@@ -70,3 +72,8 @@ def delete_question(id_):
 def get_question_for_answer_from_id(answer_id):
     answer = get_specific_answer(answer_id)
     return get_specific_question(answer['question_id'])
+
+
+def sort_data_by_header(data, header, reverse):
+    result = sorted(data, key=lambda x: int(x[header]) if x[header].isdigit() else x[header], reverse=reverse)
+    return result

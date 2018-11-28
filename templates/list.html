@@ -8,8 +8,36 @@
     <h3><a href="/add-question/">Ask a new question</a></h3>
     <table>
         <tr>
-        {% for header in nice_headers[1:5] %}
-            <th>{{ header }}</th>
+        {% for header in headers[1:5] %}
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <table>
+                                <th>
+                                    {{ nice_headers[header] }}
+                                </th>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <a href="/list/?header={{header}}&reverse=1"><img
+                                                    src="/ui/sort-up.png" width="16"></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="/list/?header={{header}}&reverse=0"><img
+                                                    src="/ui/sort-down.png" width="16"></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         {% endfor %}
         </tr>
         {% for row in questions %}

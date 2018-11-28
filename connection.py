@@ -33,6 +33,7 @@ def save_record_into_file(file_path, record, headers):
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writerow(record)
 
+
 def update_record_in_file(file_path, headers, new_record, record_id, record_id_header):
     file_contents = read_all(file_path)
     with open(file_path, "w") as f:

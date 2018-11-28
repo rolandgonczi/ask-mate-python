@@ -15,6 +15,10 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
+    header = request.args.get('header')
+    reverse = request.args.get('reverse')
+    if header is not None and reverse is not None:
+        questions = data_manager.sort_data_by_header(questions, header, int(reverse))
     return render_template("list.html", questions=questions,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
