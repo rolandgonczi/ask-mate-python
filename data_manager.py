@@ -70,3 +70,6 @@ def delete_question(id_):
 def get_question_for_answer_from_id(answer_id):
     answer = get_specific_answer(answer_id)
     return get_specific_question(answer['question_id'])
+
+def update_question(question):
+    connection.update_record_in_file(QUESTIONS_FILE_PATH, QUESTIONS_HEADER, question, question["id"], "id")
