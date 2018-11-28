@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate | Ask a new question</title>
+</head>
+<body>
+    <h1>Update your question</h1>
+    <form action="/question/<question_id>/edit" method="post">
+        <p><label>
+            Question title<br>
+            <input type="text" value="{{ question['title'] }}" name="title">
+        </label></p>
+        <p><label>
+            Question<br>
+            <textarea rows="4" cols="40" name="message">{{ question["message"] }}</textarea>
+        </label></p>
+        <p><label>
+            Image(optional)<br>
+            <input type="url" name="image">
+        </label></p>
+        <p><label>
+            <input type="submit" value="Update question" name="submit">
+        </label></p>
+    </form>
+</body>
+</html>
