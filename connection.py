@@ -32,3 +32,4 @@ def save_record_into_file(file_path, record, headers):
     with open(file_path, "a") as f:
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writerow(record)
+

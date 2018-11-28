@@ -42,6 +42,15 @@ def ask_question():
         return redirect('/')
 
 
+@app.route('/question/<question_id>/edit', methods=["GET", "POST"])
+def edit_question(question_id):
+    if request.method == "GET":
+        question = data_manager.get_specific_question(question_id)
+        return render_template("update_question.html", question=question)
+    if request.method == "POST":
+        return redirect('/')
+
+
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
 def new_answer(question_id):
     if request.method == "GET":
