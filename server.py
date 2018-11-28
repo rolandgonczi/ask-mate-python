@@ -13,6 +13,7 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
+    print(questions)
     return render_template("list.html", questions=questions,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
@@ -68,6 +69,11 @@ def new_answer(question_id):
         data_manager.save_new_answer(answer)
         return redirect('/question/{}'.format(question_id))
 
+
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete_question(question_id)
+    return redirect("/list/")
 
 if __name__ == '__main__':
     app.run(
