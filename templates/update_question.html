@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Update your question</h1>
-    <form action="/question/<question_id>/edit" method="post">
+    <form action="/question/{{ question['id'] }}/edit" method="post">
         <p><label>
             Question title<br>
             <input type="text" value="{{ question['title'] }}" name="title">
@@ -19,7 +19,7 @@
             <input type="url" name="image">
         </label></p>
         <p><label>
-            <input type="submit" value="Update question" name="submit">
+            <input type="submit" value="Update question">
         </label></p>
     </form>
 </body>
