@@ -75,13 +75,16 @@ def get_question_for_answer_from_id(answer_id):
     answer = get_specific_answer(answer_id)
     return get_specific_question(answer['question_id'])
 
+
 def update_question(question):
     connection.update_record_in_file(QUESTIONS_FILE_PATH, QUESTIONS_HEADER, question, question["id"], "id")
+
 
 def delete_answer(answer_id):
     answers = get_all_answers()
     answers.remove(get_specific_answer(answer_id))
     connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
+
 
 def sort_data_by_header(data, header, reverse):
     result = sorted(data, key=lambda x: int(x[header]) if x[header].isdigit() else x[header], reverse=reverse)
