@@ -33,9 +33,3 @@ def save_record_into_file(file_path, record, headers):
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writerow(record)
 
-
-def re_write_file(file_path, data, headers):
-    with open(file_path, "w") as f:
-        csv_writer = csv.DictWriter(f, headers)
-        csv_writer.writeheader()
-        csv_writer.writerows(data)
