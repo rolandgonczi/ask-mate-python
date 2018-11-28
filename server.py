@@ -13,7 +13,6 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
-    print(questions)
     return render_template("list.html", questions=questions,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
