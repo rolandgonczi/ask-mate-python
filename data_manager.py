@@ -56,6 +56,16 @@ def change_vote_number_for_answer(answer_id, amount):
     answer['vote_number'] = str(int(answer['vote_number']) + amount)
     connection.update_record_in_file(ANSWERS_FILE_PATH, ANSWERS_HEADER, answer, answer_id, 'id')
 
+def delete_question(id_):
+    questions = connection.read_all(QUESTIONS_FILE_PATH)
+    answers = connection.read_all(ANSWERS_FILE_PATH)
+    for answer in get_all_answers_by_question_id(id_):
+        answers.remove(answer)
+    questions.remove(get_specific_question(id_))
+    connection.re_write_file(QUESTIONS_FILE_PATH, questions, QUESTIONS_HEADER)
+    connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
+
+
 
 def get_question_for_answer_from_id(answer_id):
     answer = get_specific_answer(answer_id)

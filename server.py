@@ -62,6 +62,11 @@ def new_answer(question_id):
         return redirect('/question/{}'.format(question_id))
 
 
+@app.route("/question/<question_id>/delete")
+def delete_question(question_id):
+    data_manager.delete_question(question_id)
+    return redirect("/list/")
+
 @app.route('/ui/<image_title>')
 def ui_image(image_title):
     return send_from_directory(UI_FILE_PATH, image_title)

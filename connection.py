@@ -43,3 +43,10 @@ def update_record_in_file(file_path, headers, new_record, record_id, record_id_h
                 csv_writer.writerow(new_record)
             else:
                 csv_writer.writerow(record)
+
+
+def re_write_file(file_path, data, headers):
+    with open(file_path, "w") as f:
+        csv_writer = csv.DictWriter(f, headers)
+        csv_writer.writeheader()
+        csv_writer.writerows(data)
