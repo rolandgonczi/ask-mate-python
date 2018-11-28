@@ -6,6 +6,7 @@ def read_all(file_path):
     with open(file_path) as data_base:
         csv_reader = csv.DictReader(data_base)
         for record in csv_reader:
+            print(record)
             all_data.append(record)
     return all_data
 
@@ -32,3 +33,10 @@ def save_record_into_file(file_path, record, headers):
     with open(file_path, "a") as f:
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writerow(record)
+
+
+def re_write_file(file_path, data, headers):
+    with open(file_path, "w") as f:
+        csv_writer = csv.DictWriter(f, headers)
+        csv_writer.writeheader()
+        csv_writer.writerows(data)

@@ -47,3 +47,13 @@ def save_new_answer(answer):
     connection.save_record_into_file(ANSWERS_FILE_PATH, answer, ANSWERS_HEADER)
 
 
+def delete_question(id_):
+    questions = connection.read_all(QUESTIONS_FILE_PATH)
+    answers = connection.read_all(ANSWERS_FILE_PATH)
+    for answer in get_all_answers_by_question_id(id_):
+        answers.remove(answer)
+    questions.remove(get_specific_question(id_))
+    connection.re_write_file(QUESTIONS_FILE_PATH, questions, QUESTIONS_HEADER)
+    connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
+
+
