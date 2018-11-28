@@ -32,3 +32,14 @@ def save_record_into_file(file_path, record, headers):
     with open(file_path, "a") as f:
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writerow(record)
+
+def update_record_in_file(file_path, headers, new_record, record_id, record_id_header):
+    file_contents = read_all(file_path)
+    with open(file_path, "w") as f:
+        csv_writer = csv.DictWriter(f, headers)
+        csv_writer.writeheader()
+        for record in file_contents:
+            if record[record_id_header] == record_id:
+                csv_writer.writerow(new_record)
+            else:
+                csv_writer.writerow(record)

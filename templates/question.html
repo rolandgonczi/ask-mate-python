@@ -26,6 +26,22 @@
             <td>
                 {{ question['vote_number'] }}
             </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <a href="/question/{{ question['id'] }}/vote-up/"><img
+                                src="/ui/caret-arrow-up.png" width="16"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="/question/{{ question['id'] }}/vote-down/"><img
+                                src="/ui/caret-arrow-down.png" width="16"></a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
         </tr>
     </table>
     {% if question['image'] %}
@@ -51,6 +67,22 @@
                 <td>
                     {{ answer['vote_number'] }}
                 </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <a href="/answer/{{ answer['id'] }}/vote-up/"><img
+                                    src="/ui/caret-arrow-up.png" width="16"></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <a href="/answer/{{ answer['id'] }}/vote-down/"><img
+                                    src="/ui/caret-arrow-down.png" width="16"></a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
         </table>
         {% if answer['image'] %}
@@ -61,5 +93,14 @@
     {% else %}
     <p>No answers yet.</p>
     {% endif %}
+    <div>
+        Icons made by
+        <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a>
+        from
+        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+        is licensed by
+        <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">
+        CC 3.0 BY</a>
+    </div>
 </body>
 </html>

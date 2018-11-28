@@ -46,4 +46,17 @@ def save_new_question(question):
 def save_new_answer(answer):
     connection.save_record_into_file(ANSWERS_FILE_PATH, answer, ANSWERS_HEADER)
 
+def change_vote_number_for_question(question_id, amount):
+    question = get_specific_question(question_id)
+    question['vote_number'] = str(int(question['vote_number']) + amount)
+    connection.update_record_in_file(QUESTIONS_FILE_PATH, QUESTIONS_HEADER, question, question_id, 'id')
 
+def change_vote_number_for_answer(answer_id, amount):
+    answer = get_specific_answer(answer_id)
+    answer['vote_number'] = str(int(answer['vote_number']) + amount)
+    connection.update_record_in_file(ANSWERS_FILE_PATH, ANSWERS_HEADER, answer, answer_id, 'id')
+
+
+def get_question_for_answer_from_id(answer_id):
+    answer = get_specific_answer(answer_id)
+    return get_specific_question(answer['question_id'])

@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import data_manager
 import time
+import sys
 
 app = Flask(__name__)
+UI_FILE_PATH = sys.path[0] + "/ui"
 
 
 @app.route('/')
@@ -39,7 +41,7 @@ def ask_question():
         question["vote_number"] = 0
         question["id"] = data_manager.calculate_new_id(data_manager.get_all_questions())
         data_manager.save_new_question(question)
-        return redirect('/')
+        return redirect(url_for('index'))
 
 
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
@@ -58,6 +60,38 @@ def new_answer(question_id):
         answer["id"] = data_manager.calculate_new_id(data_manager.get_all_answers())
         data_manager.save_new_answer(answer)
         return redirect('/question/{}'.format(question_id))
+
+
+@app.route('/ui/<image_title>')
+def ui_image(image_title):
+    return send_from_directory(UI_FILE_PATH, image_title)
+
+
+@app.route('/question/<question_id>/vote-up/')
+def question_vote_up(question_id):
+    data_manager.change_vote_number_for_question(question_id, 1)
+    return redirect('/question/' + question_id)
+
+
+@app.route('/question/<question_id>/vote-down/')
+def question_vote_down(question_id):
+    data_manager.change_vote_number_for_question(question_id, -1)
+    return redirect('/question/' + question_id)
+
+
+@app.route('/answer/<answer_id>/vote-up/')
+def answer_vote_up(answer_id):
+    data_manager.change_vote_number_for_answer(answer_id, 1)
+    question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
+    return redirect('/question/' + question_id)
+
+
+@app.route('/answer/<answer_id>/vote-down/')
+def answer_vote_down(answer_id):
+    data_manager.change_vote_number_for_answer(answer_id, -1)
+    question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
+    return redirect('/question/' + question_id)
+
 
 
 if __name__ == '__main__':
