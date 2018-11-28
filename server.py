@@ -50,11 +50,14 @@ def ask_question():
 
 @app.route('/question/<question_id>/edit', methods=["GET", "POST"])
 def edit_question(question_id):
+    question = data_manager.get_specific_question(question_id)
     if request.method == "GET":
-        question = data_manager.get_specific_question(question_id)
         return render_template("update_question.html", question=question)
     if request.method == "POST":
-        return redirect('/')
+        new_question = request.form
+        question.update(new_question)
+        data_manager.update_question(question)
+        return redirect('/question/' + question_id)
 
 
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
@@ -79,6 +82,15 @@ def new_answer(question_id):
 def delete_question(question_id):
     data_manager.delete_question(question_id)
     return redirect("/list/")
+
+
+@app.route("/answer/<answer_id>/delete")
+def delete_answer(answer_id):
+    answer = data_manager.get_specific_answer(answer_id)
+    question_id = answer["question_id"]
+    data_manager.delete_answer(answer_id)
+    return redirect('/question/{}'.format(question_id))
+
 
 @app.route('/ui/<image_title>')
 def ui_image(image_title):
