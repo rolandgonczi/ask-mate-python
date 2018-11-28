@@ -43,6 +43,7 @@
                 </table>
             </td>
         </tr>
+    <p><a href="/question/{{ question['id'] }}/delete"><strong>delete question</strong></a></p>
     </table>
     {% if question['image'] %}
     <p><img src="{{ question['image'] }}"></p>
@@ -102,6 +103,5 @@
         <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">
         CC 3.0 BY</a>
     </div>
-    <p><a href="/question/{{ question['id'] }}/delete"><strong>delete question</strong></a></p>
 </body>
 </html>
