@@ -1,4 +1,5 @@
 import csv
+import util
 
 
 def read_all(file_path):
@@ -51,3 +52,9 @@ def re_write_file(file_path, data, headers):
         csv_writer = csv.DictWriter(f, headers)
         csv_writer.writeheader()
         csv_writer.writerows(data)
+
+
+def save_file(file_, file_directory, file_name, acceptable_types):
+    if util.get_file_extension(file_) not in acceptable_types:
+        raise TypeError("Not acceptable file type. Acceptable types are:", ", ".join(acceptable_types))
+    file_.save(file_directory + file_name)

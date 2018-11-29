@@ -46,7 +46,7 @@
     <p><a href="/question/{{ question['id'] }}/delete"><strong>Delete question</strong></a></p>
     </table>
     {% if question['image'] %}
-    <p><img src="{{ question['image'] }}"></p>
+    <p><img src="{{ url_for('index') + question['image'] }}"></p>
     {% endif %}
     <p><a href="/question/{{ question['id'] }}/new-answer/">Add new answer</a></p>
     <p><a href="/question/{{ question['id'] }}/edit">Update your question</a></p>
@@ -88,7 +88,7 @@
             </tr>
         </table>
         {% if answer['image'] %}
-        <p><img src="{{ answer['image'] }}"></p>
+        <p><img src="{{ url_for('index') + answer['image'] }}"></p>
         {% endif %}
         <br>
         <p><a href="/answer/{{ answer['id'] }}/delete">Delete answer</a></p>

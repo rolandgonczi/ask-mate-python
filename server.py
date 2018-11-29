@@ -15,8 +15,6 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
-    for question in questions:
-        print(question)
     header = request.args.get('header')
     reverse = request.args.get('reverse')
     if header is not None and reverse is not None:
@@ -45,7 +43,10 @@ def ask_question():
         question["submission_time"] = int(time.time())
         question["view_number"] = 0
         question["vote_number"] = 0
-        question["id"] = data_manager.calculate_new_id(data_manager.get_all_questions())
+        question["id"] = str(data_manager.calculate_new_id(data_manager.get_all_questions()))
+        if request.files['image']:
+            question["image"] = data_manager.generate_question_image_file_name(request.files['image'], question["id"], False)
+            data_manager.save_question_image(request.files['image'], question["id"])
         data_manager.save_new_question(question)
         return redirect(url_for('index'))
 
@@ -75,7 +76,10 @@ def new_answer(question_id):
         answer["question_id"] = question_id
         answer["submission_time"] = int(time.time())
         answer["vote_number"] = 0
-        answer["id"] = data_manager.calculate_new_id(data_manager.get_all_answers())
+        answer["id"] = str(data_manager.calculate_new_id(data_manager.get_all_answers()))
+        if request.files['image']:
+            answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'], answer["id"], False)
+            data_manager.save_answer_image(request.files['image'], answer["id"])
         data_manager.save_new_answer(answer)
         return redirect('/question/{}'.format(question_id))
 
@@ -90,6 +94,7 @@ def delete_question(question_id):
 def delete_answer(answer_id):
     answer = data_manager.get_specific_answer(answer_id)
     question_id = answer["question_id"]
+    data_manager.delete_image_file(answer["image"])
     data_manager.delete_answer(answer_id)
     return redirect('/question/{}'.format(question_id))
 
@@ -97,6 +102,11 @@ def delete_answer(answer_id):
 @app.route('/ui/<image_title>')
 def ui_image(image_title):
     return send_from_directory(UI_FILE_PATH, image_title)
+
+
+@app.route('/images/<image_title>')
+def images(image_title):
+    return send_from_directory(data_manager.IMAGE_DIRECTORY, image_title)
 
 
 @app.route('/question/<question_id>/vote-up/')

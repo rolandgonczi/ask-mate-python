@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Ask a new question</h1>
-    <form action="/add-question/" method="post">
+    <form action="/add-question/" method="post" enctype="multipart/form-data">
         <p><label>
             Question title<br>
             <input type="text" value="Title" name="title">
@@ -16,7 +16,7 @@
         </label></p>
         <p><label>
             Image(optional)<br>
-            <input type="url" name="image">
+            <input type="file" name="image" id="image">
         </label></p>
         <p><label>
             <input type="submit" value="Submit question" name="submit">

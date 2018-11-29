@@ -1,5 +1,7 @@
 import os
 import connection
+import util
+import sys
 
 QUESTIONS_FILE_PATH = os.getenv('QUESTIONS_FILE_PATH') if 'QUESTIONS_FILE_PATH' in os.environ else 'sample_data/question.csv'
 ANSWERS_FILE_PATH = os.getenv('ANSWERS_FILE_PATH') if 'ANSWERS_FILE_PATH' in os.environ else 'sample_data/answer.csv'
@@ -9,6 +11,8 @@ QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
                          'view_number': "View number", 'vote_number': "Vote number",
                          'title': "Title", 'message': "Message", 'image': "Image"}
 ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "Message", "Image"]
+IMAGE_DIRECTORY = sys.path[0] + "/images/"
+IMAGE_DIRECTORY_RELATIVE = "images/"
 
 
 def get_all_questions():
@@ -65,8 +69,11 @@ def delete_question(id_):
     questions = connection.read_all(QUESTIONS_FILE_PATH)
     answers = connection.read_all(ANSWERS_FILE_PATH)
     for answer in get_all_answers_by_question_id(id_):
+        delete_image_file(answer["image"])
         answers.remove(answer)
-    questions.remove(get_specific_question(id_))
+    question = get_specific_question(id_)
+    delete_image_file(question["image"])
+    questions.remove(question)
     connection.re_write_file(QUESTIONS_FILE_PATH, questions, QUESTIONS_HEADER)
     connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
 
@@ -89,3 +96,27 @@ def delete_answer(answer_id):
 def sort_data_by_header(data, header, reverse):
     result = sorted(data, key=lambda x: int(x[header]) if x[header].isdigit() else x[header], reverse=reverse)
     return result
+
+
+def save_question_image(file_, question_id):
+    file_name = "question_" + question_id + "." + util.get_file_extension(file_)
+    connection.save_file(file_, IMAGE_DIRECTORY, file_name, ("png", "jpg", "jpeg", "gif"))
+
+
+def save_answer_image(file_, answer_id):
+    file_name = "answer_" + answer_id + "." + util.get_file_extension(file_)
+    connection.save_file(file_, IMAGE_DIRECTORY, file_name, ("png", "jpg", "jpeg", "gif"))
+
+
+def generate_question_image_file_name(file_, question_id, absolute=True):
+    image_directory = IMAGE_DIRECTORY if absolute else IMAGE_DIRECTORY_RELATIVE
+    return image_directory + "question_" + question_id + "." + util.get_file_extension(file_)
+
+
+def generate_answer_image_file_name(file_, answer_id, absolute=True):
+    image_directory = IMAGE_DIRECTORY if absolute else IMAGE_DIRECTORY_RELATIVE
+    return image_directory + "answer_" + answer_id + "." + util.get_file_extension(file_)
+
+
+def delete_image_file(image_path):
+    os.remove(sys.path[0] + "/" + image_path)
