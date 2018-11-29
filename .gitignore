@@ -104,4 +104,4 @@ ENV/
 .idea/
 
 # sample data
-.sample_data/
+sample_data/
