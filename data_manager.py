@@ -2,6 +2,7 @@ import os
 import connection
 import util
 import sys
+import time
 
 QUESTIONS_FILE_PATH = os.getenv('QUESTIONS_FILE_PATH') if 'QUESTIONS_FILE_PATH' in os.environ else 'sample_data/question.csv'
 ANSWERS_FILE_PATH = os.getenv('ANSWERS_FILE_PATH') if 'ANSWERS_FILE_PATH' in os.environ else 'sample_data/answer.csv'
@@ -120,3 +121,11 @@ def generate_answer_image_file_name(file_, answer_id, absolute=True):
 
 def delete_image_file(image_path):
     os.remove(sys.path[0] + "/" + image_path)
+
+
+def convert_time_in_data_to_human_readable(data, format_="%Y.%m.%d %H:%M:%S"):
+    if type(data) in (set, tuple, list):
+        for record in data:
+            record["submission_time"] = time.strftime(format_, time.localtime(int(record["submission_time"])))
+    else:
+        data["submission_time"] = time.strftime(format_, time.localtime(int(data["submission_time"])))

@@ -15,6 +15,7 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
+    data_manager.convert_time_in_data_to_human_readable(questions)
     header = request.args.get('header')
     reverse = request.args.get('reverse')
     if header is not None and reverse is not None:
@@ -28,6 +29,8 @@ def list_messages():
 def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
+    data_manager.convert_time_in_data_to_human_readable(answers)
+    data_manager.convert_time_in_data_to_human_readable(question)
     return render_template("question.html", question=question, answers=answers)
 
 
