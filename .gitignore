@@ -102,5 +102,6 @@ ENV/
 
 # pycharm files
 .idea/
-# sample data
-sample_data/
+
+# images
+images/
