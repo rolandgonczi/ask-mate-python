@@ -15,7 +15,7 @@ def index():
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
-    data_manager.convert_time_in_data_to_human_readable(questions)
+    # data_manager.convert_time_in_data_to_human_readable(questions)
     header = request.args.get('header')
     reverse = request.args.get('reverse')
     if header is not None and reverse is not None:

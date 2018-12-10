@@ -4,8 +4,8 @@ import util
 import sys
 import time
 
-QUESTIONS_FILE_PATH = os.getenv('QUESTIONS_FILE_PATH') if 'QUESTIONS_FILE_PATH' in os.environ else 'sample_data/question.csv'
-ANSWERS_FILE_PATH = os.getenv('ANSWERS_FILE_PATH') if 'ANSWERS_FILE_PATH' in os.environ else 'sample_data/answer.csv'
+QUESTION_TABLE_NAME = "question"
+ANSWER_TABLE_NAME = "answer"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
 QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
@@ -17,66 +17,53 @@ IMAGE_DIRECTORY_RELATIVE = "images/"
 
 
 def get_all_questions():
-    return connection.read_all(QUESTIONS_FILE_PATH)
+    return connection.read_all(QUESTION_TABLE_NAME)
 
 
 def get_all_answers():
-    return connection.read_all(ANSWERS_FILE_PATH)
+    return connection.read_all(ANSWER_TABLE_NAME)
 
 
 def get_specific_question(id_):
-    return connection.find_first_by_header(QUESTIONS_FILE_PATH, "id", id_)
+    return connection.find_first_by_header(QUESTION_TABLE_NAME, "id", id_)
 
 
 def get_specific_answer(id_):
-    return connection.find_first_by_header(ANSWERS_FILE_PATH, ANSWERS_HEADER[0], id_)
+    return connection.find_first_by_header(ANSWER_TABLE_NAME, "id", id_)
 
 
 def get_all_answers_by_question_id(question_id):
-    return connection.find_all_by_header(ANSWERS_FILE_PATH, "question_id", question_id)
-
-
-def calculate_new_id(data):
-    list_of_data = data
-    new_id_number = 0
-    for keys in list_of_data:
-        if int(keys["id"]) > new_id_number:
-            new_id_number = int(keys["id"])
-        new_id_number += 1
-    return new_id_number
+    return connection.find_all_by_header(ANSWER_TABLE_NAME, "question_id", question_id)
 
 
 def save_new_question(question):
-    connection.save_record_into_file(QUESTIONS_FILE_PATH, question, QUESTIONS_HEADER)
+    connection.save_record_into_table(QUESTION_TABLE_NAME, question)
 
 
 def save_new_answer(answer):
-    connection.save_record_into_file(ANSWERS_FILE_PATH, answer, ANSWERS_HEADER)
+    connection.save_record_into_table(ANSWER_TABLE_NAME, answer)
 
 
 def change_vote_number_for_question(question_id, amount):
     question = get_specific_question(question_id)
     question['vote_number'] = str(int(question['vote_number']) + amount)
-    connection.update_record_in_file(QUESTIONS_FILE_PATH, QUESTIONS_HEADER, question, question_id, 'id')
+    connection.update_record_in_database(QUESTION_TABLE_NAME, question, question_id, 'id')
 
 
 def change_vote_number_for_answer(answer_id, amount):
     answer = get_specific_answer(answer_id)
     answer['vote_number'] = str(int(answer['vote_number']) + amount)
-    connection.update_record_in_file(ANSWERS_FILE_PATH, ANSWERS_HEADER, answer, answer_id, 'id')
+    connection.update_record_in_database(ANSWER_TABLE_NAME, answer, answer_id, 'id')
 
 
-def delete_question(id_):
-    questions = connection.read_all(QUESTIONS_FILE_PATH)
-    answers = connection.read_all(ANSWERS_FILE_PATH)
-    for answer in get_all_answers_by_question_id(id_):
+def delete_question(question_id):
+    answers = get_all_answers_by_question_id(question_id)
+    for answer in answers:
         delete_image_file(answer["image"])
-        answers.remove(answer)
-    question = get_specific_question(id_)
+    question = get_specific_question(question_id)
+    connection.delete_record_from_database(ANSWER_TABLE_NAME, question_id, "question_id")
+    connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
     delete_image_file(question["image"])
-    questions.remove(question)
-    connection.re_write_file(QUESTIONS_FILE_PATH, questions, QUESTIONS_HEADER)
-    connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
 
 
 def get_question_for_answer_from_id(answer_id):
@@ -85,13 +72,11 @@ def get_question_for_answer_from_id(answer_id):
 
 
 def update_question(question):
-    connection.update_record_in_file(QUESTIONS_FILE_PATH, QUESTIONS_HEADER, question, question["id"], "id")
+    connection.update_record_in_database(QUESTION_TABLE_NAME, question, question["id"], "id")
 
 
 def delete_answer(answer_id):
-    answers = get_all_answers()
-    answers.remove(get_specific_answer(answer_id))
-    connection.re_write_file(ANSWERS_FILE_PATH, answers, ANSWERS_HEADER)
+    connection.delete_record_from_database(ANSWER_TABLE_NAME, answer_id, "id")
 
 
 def sort_data_by_header(data, header, reverse):
@@ -121,11 +106,3 @@ def generate_answer_image_file_name(file_, answer_id, absolute=True):
 
 def delete_image_file(image_path):
     os.remove(sys.path[0] + "/" + image_path)
-
-
-def convert_time_in_data_to_human_readable(data, format_="%Y.%m.%d %H:%M:%S"):
-    if type(data) in (set, tuple, list):
-        for record in data:
-            record["submission_time"] = time.strftime(format_, time.localtime(int(record["submission_time"])))
-    else:
-        data["submission_time"] = time.strftime(format_, time.localtime(int(data["submission_time"])))
