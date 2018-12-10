@@ -80,29 +80,25 @@ def delete_answer(answer_id):
 
 
 def sort_data_by_header(data, header, reverse):
-    result = sorted(data, key=lambda x: int(x[header]) if x[header].isdigit() else x[header], reverse=reverse)
+    result = sorted(data, key=lambda x: x[header], reverse=reverse)
     return result
 
 
-def save_question_image(file_, question_id):
-    file_name = "question_" + question_id + "." + util.get_file_extension(file_)
+def save_question_image(file_, file_name):
     connection.save_file(file_, IMAGE_DIRECTORY, file_name, ("png", "jpg", "jpeg", "gif"))
 
 
-def save_answer_image(file_, answer_id):
-    file_name = "answer_" + answer_id + "." + util.get_file_extension(file_)
+def save_answer_image(file_, file_name):
     connection.save_file(file_, IMAGE_DIRECTORY, file_name, ("png", "jpg", "jpeg", "gif"))
 
 
-def generate_question_image_file_name(file_, question_id, absolute=True):
-    image_directory = IMAGE_DIRECTORY if absolute else IMAGE_DIRECTORY_RELATIVE
-    return image_directory + "question_" + question_id + "." + util.get_file_extension(file_)
+def generate_question_image_file_name(file_):
+    return "question_" + str(time.time()) + "." + util.get_file_extension(file_)
 
 
-def generate_answer_image_file_name(file_, answer_id, absolute=True):
-    image_directory = IMAGE_DIRECTORY if absolute else IMAGE_DIRECTORY_RELATIVE
-    return image_directory + "answer_" + answer_id + "." + util.get_file_extension(file_)
+def generate_answer_image_file_name(file_):
+    return "answer_" + str(time.time()) + "." + util.get_file_extension(file_)
 
 
 def delete_image_file(image_path):
-    os.remove(sys.path[0] + "/" + image_path)
+    os.remove(sys.path[0] + "/images/" + image_path)

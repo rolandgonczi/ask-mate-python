@@ -8,8 +8,8 @@
     <h1>{{ question['title'] }}</h1>
     <p>{{ question['message'] }}</p>
     {% if question['image'] %}
-    <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + question['image'] }}">
-        <img src="{{ url_for('index') + question['image'] }}" height="128">
+    <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + 'images/' + question['image'] }}">
+        <img src="{{ url_for('index') + 'images/' + question['image'] }}" height="128">
     </a></p>
     {% endif %}
     <table>
@@ -59,8 +59,8 @@
             <h3>Answer #{{ answer['id'] }}</h3>
             <p>{{ answer['message'] }}</p>
             {% if answer['image'] %}
-                <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + answer['image'] }}">
-                    <img src="{{ url_for('index') + answer['image'] }}" height="160">
+                <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + 'images/' + answer['image'] }}">
+                    <img src="{{ url_for('index') + 'images/' + answer['image'] }}" height="160">
                 </a></p>
             {% endif %}
             <table>

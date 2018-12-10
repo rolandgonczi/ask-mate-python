@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 import data_manager
 import time
 import sys
+from datetime import datetime
 
 app = Flask(__name__)
 UI_FILE_PATH = sys.path[0] + "/ui"
@@ -29,8 +30,6 @@ def list_messages():
 def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
-    data_manager.convert_time_in_data_to_human_readable(answers)
-    data_manager.convert_time_in_data_to_human_readable(question)
     return render_template("question.html", question=question, answers=answers)
 
 
@@ -43,13 +42,12 @@ def ask_question():
         for key in request.form:
             if key in data_manager.QUESTIONS_HEADER:
                 question[key] = request.form[key]
-        question["submission_time"] = int(time.time())
+        question["submission_time"] = datetime.now()
         question["view_number"] = 0
         question["vote_number"] = 0
-        question["id"] = str(data_manager.calculate_new_id(data_manager.get_all_questions()))
         if request.files['image']:
-            question["image"] = data_manager.generate_question_image_file_name(request.files['image'], question["id"], False)
-            data_manager.save_question_image(request.files['image'], question["id"])
+            question["image"] = data_manager.generate_question_image_file_name(request.files['image'])
+            data_manager.save_question_image(request.files['image'], question["image"])
         data_manager.save_new_question(question)
         return redirect(url_for('index'))
 
@@ -77,12 +75,11 @@ def new_answer(question_id):
             if key in data_manager.ANSWERS_HEADER:
                 answer[key] = request.form[key]
         answer["question_id"] = question_id
-        answer["submission_time"] = int(time.time())
+        answer["submission_time"] = datetime.now()
         answer["vote_number"] = 0
-        answer["id"] = str(data_manager.calculate_new_id(data_manager.get_all_answers()))
         if request.files['image']:
-            answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'], answer["id"], False)
-            data_manager.save_answer_image(request.files['image'], answer["id"])
+            answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'])
+            data_manager.save_answer_image(request.files['image'], answer["image"])
         data_manager.save_new_answer(answer)
         return redirect('/question/{}'.format(question_id))
 

@@ -42,14 +42,14 @@ def save_record_into_table(cursor, table_name, record):
     keys = []
     values = []
     for key, value in record.items():
-        keys.append(key)
-        values.append(value)
+        keys.append(sql.Identifier(key))
+        values.append(sql.Literal(value))
     cursor.execute(sql.SQL("""
                                 INSERT INTO {table_name} ({keys})
-                                VALUE ({values})
+                                VALUES ({values})
                             """).format(table_name=sql.Identifier(table_name),
                                         keys=sql.SQL(", ").join(keys),
-                                        values=sql.SQL(",").join(values))
+                                        values=sql.SQL(", ").join(values))
                    )
 
 
