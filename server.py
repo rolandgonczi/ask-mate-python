@@ -62,7 +62,8 @@ def edit_question(question_id):
         return render_template("update_question.html", question=question)
     if request.method == "POST":
         new_question = request.form
-        question.update(new_question)
+        for key in new_question:
+            question[key] = new_question[key]
         data_manager.update_question(question)
         return redirect(url_for('show_question', question_id=question_id))
 

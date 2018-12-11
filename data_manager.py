@@ -131,7 +131,7 @@ def get_question_ids_with_content(content):
 
 
 def get_all_questions_with_ids(question_ids):
-    return connection.find_all_by_header_multiple('question', 'id', question_ids)
+    return connection.find_all_by_header_multiple(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, 'id', question_ids)
 
 
 def get_search_results(content):
