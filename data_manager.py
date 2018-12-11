@@ -103,3 +103,32 @@ def generate_answer_image_file_name(file_):
 def delete_image_file(image_path):
     if image_path:
         os.remove(sys.path[0] + "/images/" + image_path)
+
+
+def get_question_ids_with_content_from_questions(content):
+    look_in = ("title", "message")
+    return_columns = ('id',)
+    questions = connection.find_records_with_columns_like('question', look_in, content, return_columns)
+    return set(question['id'] for question in questions)
+
+
+def get_question_ids_with_content_from_answers(content):
+    look_in = ("message",)
+    return_columns = ('question_id',)
+    answers = connection.find_records_with_columns_like('answer', look_in, content, return_columns)
+    return set(answer['question_id'] for answer in answers)
+
+
+def get_question_ids_with_content(content):
+    from_answers = get_question_ids_with_content_from_answers(content)
+    from_questions = get_question_ids_with_content_from_questions(content)
+    return from_answers | from_questions
+
+
+def get_all_questions_with_ids(question_ids):
+    return connection.find_all_by_header_multiple('question', 'id', question_ids)
+
+
+def get_search_results(content):
+    question_ids = get_question_ids_with_content(content)
+    return get_all_questions_with_ids(question_ids)

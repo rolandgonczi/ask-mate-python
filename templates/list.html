@@ -6,6 +6,12 @@
 <body>
     <h1>Welcome to AskMate!</h1>
     <h3><a href="/add-question/">Ask a new question</a></h3>
+    <p>
+        <form action="{{ url_for('search') }}" method="get" name="search" target="_blank">
+            <label>Search:<input type="text" name="search"></label>
+            <input type="submit" value="Search">
+        </form>
+    </p>
     <table>
         <tr>
         {% for header in headers[1:5] %}
