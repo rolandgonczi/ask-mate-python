@@ -17,6 +17,17 @@ def read_all(cursor, table_name):
 
 
 @database_common.connection_handler
+def read_first_n(cursor, table_name, n):
+    cursor.execute(sql.SQL("""
+                                SELECT * FROM {table_name}
+                                LIMIT {n}
+                            """).format(table_name=sql.Identifier(table_name),
+                                        n=sql.Literal(n))
+                   )
+    return cursor.fetchall()
+
+
+@database_common.connection_handler
 def find_first_by_header(cursor, table_name, header, value):
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}

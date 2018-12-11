@@ -10,7 +10,11 @@ UI_FILE_PATH = sys.path[0] + "/ui"
 
 @app.route('/')
 def index():
-    return redirect(url_for("list_messages"))
+    questions = data_manager.get_first_n_questions(5)
+    return render_template("list.html", questions=questions,
+                           headers=data_manager.QUESTIONS_HEADER,
+                           nice_headers=data_manager.QUESTIONS_HEADER_NICE,
+                           index_page=True)
 
 
 @app.route('/list/')

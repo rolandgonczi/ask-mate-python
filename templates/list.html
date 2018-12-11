@@ -5,13 +5,23 @@
 </head>
 <body>
     <h1>Welcome to AskMate!</h1>
-    <h3><a href="/add-question/">Ask a new question</a></h3>
+    <h2><a href="/add-question/">Ask a new question</a></h2>
     <p>
         <form action="{{ url_for('search') }}" method="get" name="search" target="_blank">
             <label>Search:<input type="text" name="search"></label>
             <input type="submit" value="Search">
         </form>
     </p>
+    {% if index_page %}
+    <p>
+        Viewing the first 5 questions.
+    </p>
+    <h3><a href="{{ url_for('list_messages') }}">List all questions</a></h3>
+    {% else %}
+    <p>
+        Viewing all questions.
+    </p>
+    {% endif %}
     <table>
         <tr>
         {% for header in headers[1:5] %}
@@ -24,20 +34,22 @@
                                     {{ nice_headers[header] }}
                                 </th>
                                 <td>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                <a href="/list/?header={{header}}&reverse=1"><img
-                                                    src="/ui/sort-up.png" width="16"></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <a href="/list/?header={{header}}&reverse=0"><img
-                                                    src="/ui/sort-down.png" width="16"></a>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    {% if not index_page %}
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <a href="/list/?header={{header}}&reverse=1"><img
+                                                        src="/ui/sort-up.png" width="16"></a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="/list/?header={{header}}&reverse=0"><img
+                                                        src="/ui/sort-down.png" width="16"></a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    {% endif %}
                                 </td>
                             </table>
                         </td>

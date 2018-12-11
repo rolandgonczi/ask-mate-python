@@ -20,6 +20,10 @@ def get_all_questions():
     return connection.read_all(QUESTION_TABLE_NAME)
 
 
+def get_first_n_questions(n):
+    return connection.read_first_n(QUESTION_TABLE_NAME, n)
+
+
 def get_all_answers():
     return connection.read_all(ANSWER_TABLE_NAME)
 
