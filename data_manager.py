@@ -62,8 +62,8 @@ def delete_question(question_id):
         delete_image_file(answer["image"])
     question = get_specific_question(question_id)
     connection.delete_record_from_database(ANSWER_TABLE_NAME, question_id, "question_id")
-    connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
     delete_image_file(question["image"])
+    connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
 
 
 def get_question_for_answer_from_id(answer_id):
@@ -101,4 +101,5 @@ def generate_answer_image_file_name(file_):
 
 
 def delete_image_file(image_path):
-    os.remove(sys.path[0] + "/images/" + image_path)
+    if image_path:
+        os.remove(sys.path[0] + "/images/" + image_path)
