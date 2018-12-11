@@ -8,20 +8,26 @@ SQL_LITERAL = sql.Literal
 
 
 @database_common.connection_handler
-def read_all(cursor, table_name):
+def read_all(cursor, table_name, order_by):
+    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
-                            """).format(table_name=sql.Identifier(table_name))
+                                ORDER BY {order_by}
+                            """).format(table_name=sql.Identifier(table_name),
+                                        order_by=order_by)
                    )
     return cursor.fetchall()
 
 
 @database_common.connection_handler
-def read_first_n(cursor, table_name, n):
+def read_first_n(cursor, table_name, order_by, n):
+    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
+                                ORDER BY {order_by}
                                 LIMIT {n}
                             """).format(table_name=sql.Identifier(table_name),
+                                        order_by=order_by,
                                         n=sql.Literal(n))
                    )
     return cursor.fetchall()
@@ -40,11 +46,14 @@ def find_first_by_header(cursor, table_name, header, value):
 
 
 @database_common.connection_handler
-def find_all_by_header(cursor, table_name, header, value):
+def find_all_by_header(cursor, table_name, order_by, header, value):
+    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
                                 WHERE {header} = {value}
+                                ORDER BY {order_by}
                             """).format(table_name=sql.Identifier(table_name),
+                                        order_by=order_by,
                                         header=sql.Identifier(header),
                                         value=sql.Literal(value))
                    )
@@ -52,11 +61,14 @@ def find_all_by_header(cursor, table_name, header, value):
 
 
 @database_common.connection_handler
-def find_all_by_header_multiple(cursor, table_name, header, values):
+def find_all_by_header_multiple(cursor, table_name, order_by, header, values):
+    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
                                 WHERE {header} IN ({values})
+                                ORDER BY {order_by}
                             """).format(table_name=sql.Identifier(table_name),
+                                        order_by=order_by,
                                         header=sql.Identifier(header),
                                         values=sql_from_list(values, type=SQL_LITERAL))
                    )
@@ -118,6 +130,13 @@ def sql_from_dictionary(dictionary, join_pairs="=", join_items=", "):
     sql_output = []
     for key, value in dictionary.items():
         sql_output.append(sql.SQL(join_pairs).join([sql.Identifier(key), sql.Literal(value)]))
+    return sql.SQL(join_items).join(sql_output)
+
+
+def sql_from_dictionary_with_operator(dictionary, join_pairs="=", join_items=", "):
+    sql_output = []
+    for key, value in dictionary.items():
+        sql_output.append(sql.SQL(join_pairs).join([sql.Identifier(key), sql.SQL(value)]))
     return sql.SQL(join_items).join(sql_output)
 
 

@@ -14,18 +14,19 @@ QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
 ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "Message", "Image"]
 IMAGE_DIRECTORY = sys.path[0] + "/images/"
 IMAGE_DIRECTORY_RELATIVE = "images/"
+ORDER_BY_DEFAULT = {"submission_time": "DESC"}
 
 
 def get_all_questions():
-    return connection.read_all(QUESTION_TABLE_NAME)
+    return connection.read_all(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT)
 
 
 def get_first_n_questions(n):
-    return connection.read_first_n(QUESTION_TABLE_NAME, n)
+    return connection.read_first_n(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, n)
 
 
 def get_all_answers():
-    return connection.read_all(ANSWER_TABLE_NAME)
+    return connection.read_all(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT)
 
 
 def get_specific_question(id_):
@@ -37,7 +38,7 @@ def get_specific_answer(id_):
 
 
 def get_all_answers_by_question_id(question_id):
-    return connection.find_all_by_header(ANSWER_TABLE_NAME, "question_id", question_id)
+    return connection.find_all_by_header(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT, "question_id", question_id)
 
 
 def save_new_question(question):
@@ -112,14 +113,14 @@ def delete_image_file(image_path):
 def get_question_ids_with_content_from_questions(content):
     look_in = ("title", "message")
     return_columns = ('id',)
-    questions = connection.find_records_with_columns_like('question', look_in, content, return_columns)
+    questions = connection.find_records_with_columns_like(QUESTION_TABLE_NAME, look_in, content, return_columns)
     return set(question['id'] for question in questions)
 
 
 def get_question_ids_with_content_from_answers(content):
     look_in = ("message",)
     return_columns = ('question_id',)
-    answers = connection.find_records_with_columns_like('answer', look_in, content, return_columns)
+    answers = connection.find_records_with_columns_like(ANSWER_TABLE_NAME, look_in, content, return_columns)
     return set(answer['question_id'] for answer in answers)
 
 

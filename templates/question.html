@@ -4,7 +4,7 @@
     <title>AskMate | {{ question['title'] }}</title>
 </head>
 <body>
-    <a href="/">Back to HOME</a>
+    <a href="{{url_for('list_messages')}}">Back to list</a>
     <h1>{{ question['title'] }}</h1>
     <p>{{ question['message'] }}</p>
     {% if question['image'] %}
