@@ -132,8 +132,10 @@ def new_comment_to_specific_answer(answer_id):
 
 @app.route("/comment/<comment_id>/delete")
 def delete_comment(comment_id):
-
-    data.manager.delete_comment(comment_id)
+    comment = data_manager.get_specific_comment(comment_id)
+    if comment["question_id"]:
+        question_id = comment["question_id"]
+    data_manager.delete_comment(comment_id)
     return redirect('/question/{}'.format(question_id))
 
 
