@@ -48,19 +48,15 @@ def get_all_answers_by_question_id(question_id):
 
 
 def get_comments_by_question_id(question_id):
-    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "question_id", question_id)
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "question_id", question_id)
 
 
 def get_comments_by_answer_id(answer_id):
-    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "answer_id", answer_id)
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "answer_id", answer_id)
 
 
 def get_question_by_answer_id(answer_id):
-    return connection.get_question_id_from_answer(ANSWER_TABLE_NAME, 'id', answer_id)
-
-
-def get_answer_ids_from_question(question_id):
-    return connection.get_answer_ids_from_question(QUESTION_TABLE_NAME, 'id', question_id)
+    return connection.get_columns_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)
 
 
 def save_new_question(question):

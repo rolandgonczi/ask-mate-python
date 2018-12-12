@@ -124,27 +124,17 @@ def delete_record_from_database(cursor, table_name, record_id, record_id_header)
 
 
 @database_common.connection_handler
-def get_question_id_from_answer(cursor, table_name, header, value):
+def get_columns_with_key(cursor, table_name, columns, header, value):
+    columns = sql.SQL(', ').join([sql.Identifier(column) for column in columns])
     cursor.execute(sql.SQL("""
-                                SELECT question_id FROM {table_name}
+                                SELECT {columns} FROM {table_name}
                                 WHERE {header} = {value}
                             """).format(table_name=sql.Identifier(table_name),
+                                        columns=columns,
                                         header=sql.Identifier(header),
                                         value=sql.Literal(value))
                    )
     return cursor.fetchone()
-
-
-@database_common.connection_handler
-def get_answer_ids_from_question(cursor, table_name, header, value):
-    cursor.execute(sql.SQL("""
-                                SELECT answer_id FROM {table_name}
-                                WHERE {header} = {value}
-                            """).format(table_name=sql.Identifier(table_name),
-                                        header=sql.Identifier(header),
-                                        value=sql.Literal(value))
-                   )
-    return cursor.fetchall()
 
 
 def save_file(file_, file_directory, file_name, acceptable_types):
