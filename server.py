@@ -39,8 +39,11 @@ def show_question(question_id):
     question_comments = data_manager.get_comments_by_question_id(question_id)
     answer_comments = []
     for id in answer_ids:
-        answer_comments.append(data_manager.get_comments_by_answer_id(id))
-    return render_template("question.html", question=question, answers=answers, question_comments=question_comments, answer_comments=answer_comments)
+        answer_comments.extend(data_manager.get_comments_by_answer_id(id))
+    return render_template("question.html",
+                           question=question, answers=answers,
+                           question_comments=question_comments,
+                           answer_comments=answer_comments)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])
@@ -96,7 +99,7 @@ def new_answer(question_id):
 
 
 @app.route('/question/<question_id>/new-comment/', methods=["GET", "POST"])
-def new_comment(question_id, answer_id = None):
+def new_comment_for_question(question_id, answer_id = None):
     if request.method == "GET":
         question = data_manager.get_specific_question(question_id)
         answer = data_manager.get_specific_answer(answer_id)
@@ -108,7 +111,7 @@ def new_comment(question_id, answer_id = None):
                 comment[key] = request.form[key]
         comment["question_id"] = question_id
         comment["answer_id"] = answer_id
-        comment["submission_time"] = datetime.now()
+        comment["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         comment["edited_count"] = 0
         data_manager.save_new_comment(comment)
         return redirect('/question/{}'.format(question_id))
