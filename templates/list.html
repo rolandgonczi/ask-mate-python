@@ -1,11 +1,12 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <title>AskMate Home Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
     <h1>Welcome to AskMate!</h1>
-    <h2><a href="/add-question/">Ask a new question</a></h2>
+    <h2><a class="button" href="/add-question/">Ask a new question</a></h2>
     <p>
         <form action="{{ url_for('search') }}" method="get" name="search" target="_blank">
             <label>Search:<input type="text" name="search"></label>
@@ -16,7 +17,7 @@
     <p>
         Viewing the first 5 questions.
     </p>
-    <h3><a href="{{ url_for('list_messages') }}">List all questions</a></h3>
+    <h3><a class="button" href="{{ url_for('list_messages') }}">List all questions</a></h3>
     {% else %}
     <p>
         Viewing all questions.
