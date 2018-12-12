@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate | Update {{ comment['id'] }}</title>
+</head>
+<body>
+    <h1>Update your comment</h1>
+    <form action="/comment/{{ comment['id'] }}/edit" method="post">
+        <p><label>
+            Comment<br>
+            <textarea rows="4" cols="40" name="message">{{ comment["message"] }}</textarea>
+        </label></p>
+        <p><label>
+            <input type="submit" value="Update comment">
+        </label></p>
+    </form>
+</body>
+</html>

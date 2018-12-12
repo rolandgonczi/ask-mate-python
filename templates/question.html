@@ -74,6 +74,7 @@
                     </td>
                 </tr>
             </table>
+            <p><a href="/comment/{{ comment['id'] }}/edit">Update your comment</a></p>
             <p><a href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
         {% endfor %}
     {% endif %}
@@ -143,10 +144,12 @@
                                 </td>
                             </tr>
                         </table>
+                    <p><a href="/comment/{{ comment['id'] }}/edit">Update your comment</a></p>
                     <p><a href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
                     {% endif %}
                 {% endfor %}
             {% endif %}
+            <p><a href="/answer/{{ answer['id'] }}/edit">Update your answer</a></p>
             <p><a href="/answer/{{ answer['id'] }}/delete">Delete answer</a></p>
         {% endfor %}
     {% else %}
