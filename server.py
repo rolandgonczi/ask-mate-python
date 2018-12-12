@@ -78,6 +78,39 @@ def edit_question(question_id):
         return redirect(url_for('show_question', question_id=question_id))
 
 
+@app.route('/answer/<answer_id>/edit', methods=["GET", "POST"])
+def edit_answer(answer_id):
+    answer = data_manager.get_specific_answer(answer_id)
+    if request.method == "GET":
+        return render_template("update_answer.html", answer=answer)
+    if request.method == "POST":
+        new_answer = request.form
+        for key in new_answer:
+            answer[key] = new_answer[key]
+        data_manager.update_answer(answer)
+        return redirect(url_for('show_question', question_id=answer["question_id"]))
+
+
+@app.route('/comment/<comment_id>/edit', methods=["GET", "POST"])
+def edit_comment(comment_id):
+    comment = data_manager.get_specific_comment(comment_id)
+    if request.method == "GET":
+        return render_template("update_comment.html", comment=comment)
+    if request.method == "POST":
+        new_comment = request.form
+        for key in new_comment:
+            comment[key] = new_comment[key]
+        data_manager.update_comment(comment)
+        print(comment["question_id"])
+        if comment["question_id"] is not None:
+            question_id = comment["question_id"]
+        else:
+            answer_id = comment["answer_id"]
+            answer = data_manager.get_specific_answer(answer_id)
+            question_id = answer["question_id"]
+        return redirect(url_for('show_question', question_id=question_id))
+
+
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
 def new_answer(question_id):
     if request.method == "GET":
@@ -91,6 +124,7 @@ def new_answer(question_id):
         answer["question_id"] = question_id
         answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         answer["vote_number"] = 0
+        print(request.files)
         if request.files['image']:
             answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'])
             data_manager.save_answer_image(request.files['image'], answer["image"])
@@ -208,7 +242,6 @@ def search():
     return render_template("search.html", questions=search_results,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
-
 
 
 if __name__ == '__main__':

@@ -88,6 +88,7 @@ def delete_question(question_id):
     for answer in answers:
         delete_image_file(answer["image"])
     question = get_specific_question(question_id)
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, question_id, "question_id")
     connection.delete_record_from_database(ANSWER_TABLE_NAME, question_id, "question_id")
     delete_image_file(question["image"])
     connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
@@ -102,7 +103,16 @@ def update_question(question):
     connection.update_record_in_database(QUESTION_TABLE_NAME, question, question["id"], "id")
 
 
+def update_answer(answer):
+    connection.update_record_in_database(ANSWER_TABLE_NAME, answer, answer["id"], "id")
+
+
+def update_comment(comment):
+    connection.update_record_in_database(COMMENTS_TABLE_NAME, comment, comment["id"], "id")
+
+
 def delete_answer(answer_id):
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, answer_id, "answer_id")
     connection.delete_record_from_database(ANSWER_TABLE_NAME, answer_id, "id")
 
 
