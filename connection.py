@@ -146,7 +146,7 @@ def delete_record_from_database(cursor, table_name, record_id, record_id_header)
 
 
 @database_common.connection_handler
-def get_columns_with_key(cursor, table_name, columns, header, value):
+def get_column_with_key(cursor, table_name, columns, header, value):
     columns = sql.SQL(', ').join([sql.Identifier(column) for column in columns])
     cursor.execute(sql.SQL("""
                                 SELECT {columns} FROM {table_name}
@@ -156,7 +156,7 @@ def get_columns_with_key(cursor, table_name, columns, header, value):
                                         header=sql.Identifier(header),
                                         value=sql.Literal(value))
                    )
-    return cursor.fetchall()
+    return cursor.fetchone()
 
 
 def save_file(file_, file_directory, file_name, acceptable_types):
@@ -212,3 +212,14 @@ def find_records_with_columns_like(cursor, table_name, columns, string, columns_
                                         columns_to_return=columns_to_return)
                    )
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def delete_record_by_multiple_headers(cursor, table_name, criteria):
+    criteria = sql_from_dictionary(criteria, join_items=' AND ')
+    cursor.execute(sql.SQL("""
+                            DELETE FROM {table_name}
+                            WHERE {criteria}
+                            """).format(table_name=sql.Identifier(table_name),
+                                        criteria=criteria)
+                   )

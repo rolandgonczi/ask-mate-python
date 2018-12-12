@@ -57,8 +57,8 @@ def get_comments_by_answer_id(answer_id):
     return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "answer_id", answer_id)
 
 
-def get_question_by_answer_id(answer_id):
-    return connection.get_columns_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)
+def get_question_id_by_answer_id(answer_id):
+    return connection.get_column_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)['question_id']
 
 
 def save_new_question(question):
@@ -94,6 +94,7 @@ def delete_question(question_id):
     question = get_specific_question(question_id)
     connection.delete_record_from_database(ANSWER_TABLE_NAME, question_id, "question_id")
     delete_image_file(question["image"])
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, question_id, "question_id")
     connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
 
 
@@ -107,6 +108,7 @@ def update_question(question):
 
 
 def delete_answer(answer_id):
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, answer_id, "answer_id")
     connection.delete_record_from_database(ANSWER_TABLE_NAME, answer_id, "id")
 
 
@@ -204,3 +206,8 @@ def save_new_tag_for_question(question_id, tag_id):
 
 def delete_tags_for_question(question_id):
     connection.delete_record_from_database(QUESTION_TAG_CONNECTION_TABLE, question_id, 'question_id')
+
+
+def delete_specific_tag_from_question(question_id, tag_id):
+    criteria = {'question_id': question_id, 'tag_id': tag_id}
+    connection.delete_record_by_multiple_headers(QUESTION_TAG_CONNECTION_TABLE, criteria)
