@@ -7,6 +7,15 @@
     <a href="{{url_for('list_messages')}}">Back to list</a>
     <h1>{{ question['title'] }}</h1>
     <p>{{ question['message'] }}</p>
+    <div class="tags">
+        <p>tags:
+            <ul>
+                {% for tag in question_tags %}
+                    <li>{{ tag["name"] }}</li>
+                {% endfor %}
+            </ul>
+        </p>
+    </div>
     {% if question['image'] %}
     <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + 'images/' + question['image'] }}">
         <img src="{{ url_for('index') + 'images/' + question['image'] }}" height="128">
@@ -49,9 +58,10 @@
                 </table>
             </td>
         </tr>
+    </table>
+    <p><a href="{{url_for('new_tag_for_question', question_id = question['id'])}}">Add tag</a></p>
     <p><a href="/question/{{ question['id'] }}/edit">Update your question</a></p>
     <p><a href="/question/{{ question['id'] }}/delete"><strong>Delete question</strong></a></p>
-    </table>
     <p><a href="/question/{{ question['id'] }}/new-comment/">Add new comment</a></p>
     <h3>Comments:</h3>
     {% if question_comments %}

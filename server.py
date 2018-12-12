@@ -33,6 +33,7 @@ def list_messages():
 def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
+    question_tags = data_manager.get_tags_for_question(question_id)
     answer_ids = []
     for dictionary in answers:
         answer_ids.append(dictionary['id'])
@@ -43,7 +44,8 @@ def show_question(question_id):
     return render_template("question.html",
                            question=question, answers=answers,
                            question_comments=question_comments,
-                           answer_comments=answer_comments)
+                           answer_comments=answer_comments,
+                           question_tags=question_tags)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])
@@ -208,6 +210,25 @@ def search():
     return render_template("search.html", questions=search_results,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
+
+
+@app.route('/question/<int:question_id>/new-tag', methods=['POST', 'GET'])
+def new_tag_for_question(question_id):
+    if request.method == 'GET':
+        all_tags = data_manager.get_all_tags()
+        tags_for_question = data_manager.get_tags_for_question(question_id)
+        return render_template('new_tag.html',
+                               all_tags=all_tags,
+                               tags_for_question=tags_for_question,
+                               question_id=question_id)
+    elif request.method == 'POST':
+        if request.form['new_tag']:
+            data_manager.save_new_tag(request.form['new_tag'])
+            tag_id = data_manager.get_tag_id_by_name(request.form['new_tag'])
+        else:
+            tag_id = request.form['existing_tag']
+        data_manager.save_new_tag_for_question(question_id, tag_id)
+        return redirect(url_for('show_question', question_id=question_id))
 
 
 
