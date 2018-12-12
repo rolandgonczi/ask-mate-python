@@ -7,6 +7,8 @@ import time
 QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
 COMMENTS_TABLE_NAME = "comment"
+TAG_TABLE_NAME = "tag"
+QUESTION_TAG_CONNECTION_TABLE = "question_tag"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
 COMMENTS_HEADER = ["id", "question_id", "answer_id", "message", "submission_time", "edited_count"]
@@ -55,8 +57,8 @@ def get_comments_by_answer_id(answer_id):
     return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "answer_id", answer_id)
 
 
-def get_question_by_answer_id(answer_id):
-    return connection.get_columns_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)
+def get_question_id_by_answer_id(answer_id):
+    return connection.get_column_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)['question_id']
 
 
 def save_new_question(question):
@@ -84,13 +86,16 @@ def change_vote_number_for_answer(answer_id, amount):
 
 
 def delete_question(question_id):
+    delete_tags_for_question(question_id)
     answers = get_all_answers_by_question_id(question_id)
     for answer in answers:
         delete_image_file(answer["image"])
+        connection.delete_record_from_database(COMMENTS_TABLE_NAME, answer['id'], "answer_id")
     question = get_specific_question(question_id)
     connection.delete_record_from_database(COMMENTS_TABLE_NAME, question_id, "question_id")
     connection.delete_record_from_database(ANSWER_TABLE_NAME, question_id, "question_id")
     delete_image_file(question["image"])
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, question_id, "question_id")
     connection.delete_record_from_database(QUESTION_TABLE_NAME, question_id, "id")
 
 
@@ -167,9 +172,51 @@ def get_question_ids_with_content(content):
 
 
 def get_all_questions_with_ids(question_ids):
-    return connection.find_all_by_header_multiple(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, 'id', question_ids)
+    return connection.find_all_by_header_multiple_values(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, 'id', question_ids)
 
 
 def get_search_results(content):
     question_ids = get_question_ids_with_content(content)
     return get_all_questions_with_ids(question_ids)
+
+
+def get_tags_for_question(question_id):
+    question_tag = connection.find_all_by_header('question_tag', None, 'question_id', question_id)
+    tag_ids = tuple(tag['tag_id'] for tag in question_tag)
+    return connection.find_all_by_header_multiple_values(TAG_TABLE_NAME, None, 'id', tag_ids)
+
+
+def get_all_tags():
+    return connection.read_all(TAG_TABLE_NAME, None)
+
+
+def save_new_tag(tag_name):
+    connection.save_record_into_table(TAG_TABLE_NAME, {'name': tag_name})
+
+
+def get_tag_id_by_name(tag_name):
+    return connection.find_first_by_header(TAG_TABLE_NAME, 'name', tag_name)["id"]
+
+
+def check_if_tag_exists(tag_name):
+    return bool(connection.find_first_by_header(TAG_TABLE_NAME, 'name', tag_name))
+
+
+def question_has_tag(question_id, tag_id):
+    criteria = {'question_id': question_id, 'tag_id': tag_id}
+    return bool(connection.find_first_by_multiple_headers(QUESTION_TAG_CONNECTION_TABLE, criteria))
+
+
+def save_new_tag_for_question(question_id, tag_id):
+    if not question_has_tag(question_id, tag_id):
+        question_tag = {'question_id': question_id, 'tag_id': tag_id}
+        connection.save_record_into_table(QUESTION_TAG_CONNECTION_TABLE, question_tag)
+
+
+def delete_tags_for_question(question_id):
+    connection.delete_record_from_database(QUESTION_TAG_CONNECTION_TABLE, question_id, 'question_id')
+
+
+def delete_specific_tag_from_question(question_id, tag_id):
+    criteria = {'question_id': question_id, 'tag_id': tag_id}
+    connection.delete_record_by_multiple_headers(QUESTION_TAG_CONNECTION_TABLE, criteria)

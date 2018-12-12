@@ -1,11 +1,10 @@
 <!doctype html>
 <html>
 <head>
-    <title>AskMate | New comment to {{ question["title"] }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title>AskMate | New comment to answer</title>
 </head>
 <body>
-    <h1>Add a new comment to {{ question["title"] }}</h1>
+    <h1>Add a new comment to answer:</h1>
     <p>{{ answer['message'] }}</p>
     <form action="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}" method="post" enctype="multipart/form-data">
         <p><label>

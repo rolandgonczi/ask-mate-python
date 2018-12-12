@@ -33,6 +33,7 @@ def list_messages():
 def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
+    question_tags = data_manager.get_tags_for_question(question_id)
     answer_ids = []
     for dictionary in answers:
         answer_ids.append(dictionary['id'])
@@ -43,7 +44,8 @@ def show_question(question_id):
     return render_template("question.html",
                            question=question, answers=answers,
                            question_comments=question_comments,
-                           answer_comments=answer_comments)
+                           answer_comments=answer_comments,
+                           question_tags=question_tags)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])
@@ -124,7 +126,6 @@ def new_answer(question_id):
         answer["question_id"] = question_id
         answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         answer["vote_number"] = 0
-        print(request.files)
         if request.files['image']:
             answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'])
             data_manager.save_answer_image(request.files['image'], answer["image"])
@@ -151,13 +152,12 @@ def new_comment_for_question(question_id, answer_id = None):
         return redirect('/question/{}'.format(question_id))
 
 
-@app.route('/answer/<answer_id>/new_comment/', methods=["GET", "POST"])
+@app.route('/answer/<int:answer_id>/new_comment/', methods=["GET", "POST"])
 def new_comment_to_specific_answer(answer_id):
-    question_id = data_manager.get_question_by_answer_id(answer_id)
+    question_id = data_manager.get_question_id_by_answer_id(answer_id)
     if request.method == "GET":
-        question = data_manager.get_specific_question(question_id["question_id"])
         answer = data_manager.get_specific_answer(answer_id)
-        return render_template("new_comment_to_answer.html", question=question, answer=answer)
+        return render_template("new_comment_to_answer.html", answer=answer)
     if request.method == "POST":
         comment = {}
         for key in request.form:
@@ -168,10 +168,10 @@ def new_comment_to_specific_answer(answer_id):
         comment["submission_time"] = datetime.now()
         comment["edited_count"] = 0
         data_manager.save_new_comment(comment)
-        return redirect('/question/{}'.format(question_id["question_id"]))
+        return redirect(url_for('show_question', question_id=question_id))
 
 
-@app.route("/comment/<comment_id>/delete")
+@app.route("/comment/<int:comment_id>/delete")
 def delete_comment(comment_id):
     comment = data_manager.get_specific_comment(comment_id)
     if comment["question_id"]:
@@ -184,13 +184,13 @@ def delete_comment(comment_id):
     return redirect('/question/{}'.format(question_id))
 
 
-@app.route("/question/<question_id>/delete")
+@app.route("/question/<int:question_id>/delete")
 def delete_question(question_id):
     data_manager.delete_question(question_id)
     return redirect("/list/")
 
 
-@app.route("/answer/<answer_id>/delete")
+@app.route("/answer/<int:answer_id>/delete")
 def delete_answer(answer_id):
     answer = data_manager.get_specific_answer(answer_id)
     question_id = answer["question_id"]
@@ -209,26 +209,26 @@ def images(image_title):
     return send_from_directory(data_manager.IMAGE_DIRECTORY, image_title)
 
 
-@app.route('/question/<question_id>/vote-up/')
+@app.route('/question/<int:question_id>/vote-up/')
 def question_vote_up(question_id):
     data_manager.change_vote_number_for_question(question_id, 1)
     return redirect(url_for('show_question', question_id=question_id))
 
 
-@app.route('/question/<question_id>/vote-down/')
+@app.route('/question/<int:question_id>/vote-down/')
 def question_vote_down(question_id):
     data_manager.change_vote_number_for_question(question_id, -1)
     return redirect(url_for('show_question', question_id=question_id))
 
 
-@app.route('/answer/<answer_id>/vote-up/')
+@app.route('/answer/<int:answer_id>/vote-up/')
 def answer_vote_up(answer_id):
     data_manager.change_vote_number_for_answer(answer_id, 1)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
     return redirect(url_for('show_question', question_id=question_id))
 
 
-@app.route('/answer/<answer_id>/vote-down/')
+@app.route('/answer/<int:answer_id>/vote-down/')
 def answer_vote_down(answer_id):
     data_manager.change_vote_number_for_answer(answer_id, -1)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
@@ -242,6 +242,32 @@ def search():
     return render_template("search.html", questions=search_results,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE)
+
+
+@app.route('/question/<int:question_id>/new-tag', methods=['POST', 'GET'])
+def new_tag_for_question(question_id):
+    if request.method == 'GET':
+        all_tags = data_manager.get_all_tags()
+        tags_for_question = data_manager.get_tags_for_question(question_id)
+        return render_template('new_tag.html',
+                               all_tags=all_tags,
+                               tags_for_question=tags_for_question,
+                               question_id=question_id)
+    elif request.method == 'POST':
+        if request.form['new_tag']:
+            data_manager.save_new_tag(request.form['new_tag'])
+            tag_id = data_manager.get_tag_id_by_name(request.form['new_tag'])
+        else:
+            tag_id = request.form['existing_tag']
+        data_manager.save_new_tag_for_question(question_id, tag_id)
+        return redirect(url_for('show_question', question_id=question_id))
+
+
+@app.route('/question/<int:question_id>/tag/<int:tag_id>/delete')
+def delete_tag_from_question(question_id, tag_id):
+    data_manager.delete_specific_tag_from_question(question_id, tag_id)
+    return redirect(url_for('show_question', question_id=question_id))
+
 
 
 if __name__ == '__main__':

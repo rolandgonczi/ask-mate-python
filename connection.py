@@ -9,10 +9,14 @@ SQL_LITERAL = sql.Literal
 
 @database_common.connection_handler
 def read_all(cursor, table_name, order_by):
-    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
+    if order_by:
+        order_by = sql.SQL(' ').join((sql.SQL('ORDER BY'),
+                                      sql_from_dictionary_with_operator(order_by, ' ', ', ')))
+    else:
+        order_by = sql.SQL('')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
-                                ORDER BY {order_by}
+                                {order_by}
                             """).format(table_name=sql.Identifier(table_name),
                                         order_by=order_by)
                    )
@@ -47,11 +51,15 @@ def find_first_by_header(cursor, table_name, header, value):
 
 @database_common.connection_handler
 def find_all_by_header(cursor, table_name, order_by, header, value):
-    order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
+    if order_by:
+        order_by = sql.SQL(' ').join((sql.SQL('ORDER BY'),
+                                      sql_from_dictionary_with_operator(order_by, ' ', ', ')))
+    else:
+        order_by = sql.SQL('')
     cursor.execute(sql.SQL("""
                                 SELECT * FROM {table_name}
                                 WHERE {header} = {value}
-                                ORDER BY {order_by}
+                                {order_by}
                             """).format(table_name=sql.Identifier(table_name),
                                         order_by=order_by,
                                         header=sql.Identifier(header),
@@ -61,13 +69,31 @@ def find_all_by_header(cursor, table_name, order_by, header, value):
 
 
 @database_common.connection_handler
-def find_all_by_header_multiple(cursor, table_name, order_by, header, values):
+def find_first_by_multiple_headers(cursor, table_name, criteria):
+    criteria = sql_from_dictionary(criteria, join_items=' AND ')
+    cursor.execute(sql.SQL("""
+                                SELECT * FROM {table_name}
+                                WHERE {criteria}
+                            """).format(table_name=sql.Identifier(table_name),
+                                        criteria=criteria)
+                   )
+    return cursor.fetchone()
+
+
+
+@database_common.connection_handler
+def find_all_by_header_multiple_values(cursor, table_name, order_by, header, values):
+    print('Values:', list(values))
     if values:
-        order_by = sql_from_dictionary_with_operator(order_by, ' ', ', ')
+        if order_by:
+            order_by = sql.SQL(' ').join((sql.SQL('ORDER BY'),
+                                          sql_from_dictionary_with_operator(order_by, ' ', ', ')))
+        else:
+            order_by = sql.SQL('')
         cursor.execute(sql.SQL("""
                                     SELECT * FROM {table_name}
                                     WHERE {header} IN ({values})
-                                    ORDER BY {order_by}
+                                    {order_by}
                                 """).format(table_name=sql.Identifier(table_name),
                                             order_by=order_by,
                                             header=sql.Identifier(header),
@@ -80,7 +106,6 @@ def find_all_by_header_multiple(cursor, table_name, order_by, header, values):
 
 @database_common.connection_handler
 def save_record_into_table(cursor, table_name, record):
-    print("NEW RECORD:", record)
     keys = []
     values = []
     for key, value in record.items():
@@ -97,9 +122,7 @@ def save_record_into_table(cursor, table_name, record):
 
 @database_common.connection_handler
 def update_record_in_database(cursor, table_name, new_record, record_id, record_id_header):
-    print(new_record)
     criteria = sql.SQL("=").join([sql.Identifier(record_id_header), sql.Literal(record_id)])
-    print(sql_from_dictionary(new_record))
     cursor.execute(sql.SQL("""
                             UPDATE {table_name}
                             SET {new_record}
@@ -114,7 +137,6 @@ def update_record_in_database(cursor, table_name, new_record, record_id, record_
 @database_common.connection_handler
 def delete_record_from_database(cursor, table_name, record_id, record_id_header):
     criteria = sql.SQL("=").join([sql.Identifier(record_id_header), sql.Literal(record_id)])
-    print(criteria)
     cursor.execute(sql.SQL("""
                             DELETE FROM {table_name}
                             WHERE {criteria}
@@ -124,7 +146,7 @@ def delete_record_from_database(cursor, table_name, record_id, record_id_header)
 
 
 @database_common.connection_handler
-def get_columns_with_key(cursor, table_name, columns, header, value):
+def get_column_with_key(cursor, table_name, columns, header, value):
     columns = sql.SQL(', ').join([sql.Identifier(column) for column in columns])
     cursor.execute(sql.SQL("""
                                 SELECT {columns} FROM {table_name}
@@ -190,3 +212,14 @@ def find_records_with_columns_like(cursor, table_name, columns, string, columns_
                                         columns_to_return=columns_to_return)
                    )
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def delete_record_by_multiple_headers(cursor, table_name, criteria):
+    criteria = sql_from_dictionary(criteria, join_items=' AND ')
+    cursor.execute(sql.SQL("""
+                            DELETE FROM {table_name}
+                            WHERE {criteria}
+                            """).format(table_name=sql.Identifier(table_name),
+                                        criteria=criteria)
+                   )
