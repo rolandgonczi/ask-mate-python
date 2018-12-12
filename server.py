@@ -10,13 +10,16 @@ UI_FILE_PATH = sys.path[0] + "/ui"
 
 @app.route('/')
 def index():
-    return redirect(url_for("list_messages"))
+    questions = data_manager.get_first_n_questions(5)
+    return render_template("list.html", questions=questions,
+                           headers=data_manager.QUESTIONS_HEADER,
+                           nice_headers=data_manager.QUESTIONS_HEADER_NICE,
+                           index_page=True)
 
 
 @app.route('/list/')
 def list_messages():
     questions = data_manager.get_all_questions()
-    # data_manager.convert_time_in_data_to_human_readable(questions)
     header = request.args.get('header')
     reverse = request.args.get('reverse')
     if header is not None and reverse is not None:
@@ -36,8 +39,11 @@ def show_question(question_id):
     question_comments = data_manager.get_comments_by_question_id(question_id)
     answer_comments = []
     for id in answer_ids:
-        answer_comments.append(data_manager.get_comments_by_answer_id(id))
-    return render_template("question.html", question=question, answers=answers, question_comments=question_comments, answer_comments=answer_comments)
+        answer_comments.extend(data_manager.get_comments_by_answer_id(id))
+    return render_template("question.html",
+                           question=question, answers=answers,
+                           question_comments=question_comments,
+                           answer_comments=answer_comments)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])
@@ -49,7 +55,7 @@ def ask_question():
         for key in request.form:
             if key in data_manager.QUESTIONS_HEADER:
                 question[key] = request.form[key]
-        question["submission_time"] = datetime.now()
+        question["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         question["view_number"] = 0
         question["vote_number"] = 0
         if request.files['image']:
@@ -66,9 +72,10 @@ def edit_question(question_id):
         return render_template("update_question.html", question=question)
     if request.method == "POST":
         new_question = request.form
-        question.update(new_question)
+        for key in new_question:
+            question[key] = new_question[key]
         data_manager.update_question(question)
-        return redirect('/question/' + question_id)
+        return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
@@ -82,17 +89,17 @@ def new_answer(question_id):
             if key in data_manager.ANSWERS_HEADER:
                 answer[key] = request.form[key]
         answer["question_id"] = question_id
-        answer["submission_time"] = datetime.now()
+        answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         answer["vote_number"] = 0
         if request.files['image']:
             answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'])
             data_manager.save_answer_image(request.files['image'], answer["image"])
         data_manager.save_new_answer(answer)
-        return redirect('/question/{}'.format(question_id))
+        return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/new-comment/', methods=["GET", "POST"])
-def new_comment(question_id, answer_id = None):
+def new_comment_for_question(question_id, answer_id = None):
     if request.method == "GET":
         question = data_manager.get_specific_question(question_id)
         answer = data_manager.get_specific_answer(answer_id)
@@ -104,7 +111,7 @@ def new_comment(question_id, answer_id = None):
                 comment[key] = request.form[key]
         comment["question_id"] = question_id
         comment["answer_id"] = answer_id
-        comment["submission_time"] = datetime.now()
+        comment["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         comment["edited_count"] = 0
         data_manager.save_new_comment(comment)
         return redirect('/question/{}'.format(question_id))
@@ -155,7 +162,7 @@ def delete_answer(answer_id):
     question_id = answer["question_id"]
     data_manager.delete_image_file(answer["image"])
     data_manager.delete_answer(answer_id)
-    return redirect('/question/{}'.format(question_id))
+    return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/ui/<image_title>')
@@ -171,27 +178,36 @@ def images(image_title):
 @app.route('/question/<question_id>/vote-up/')
 def question_vote_up(question_id):
     data_manager.change_vote_number_for_question(question_id, 1)
-    return redirect('/question/' + question_id)
+    return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/vote-down/')
 def question_vote_down(question_id):
     data_manager.change_vote_number_for_question(question_id, -1)
-    return redirect('/question/' + question_id)
+    return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/vote-up/')
 def answer_vote_up(answer_id):
     data_manager.change_vote_number_for_answer(answer_id, 1)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
-    return redirect('/question/' + question_id)
+    return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/vote-down/')
 def answer_vote_down(answer_id):
     data_manager.change_vote_number_for_answer(answer_id, -1)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
-    return redirect('/question/' + question_id)
+    return redirect(url_for('show_question', question_id=question_id))
+
+
+@app.route('/search')
+def search():
+    search = request.args.get('search')
+    search_results = data_manager.get_search_results(search)
+    return render_template("search.html", questions=search_results,
+                           headers=data_manager.QUESTIONS_HEADER,
+                           nice_headers=data_manager.QUESTIONS_HEADER_NICE)
 
 
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ask Mate | Search Results: </title>
+    </head>
+    <body>
+        <h1>Search Results:</h1>
+        {% if questions %}
+            <table>
+                <tr>
+                {% for header in headers[1:5] %}
+                    <th>
+                        {{ nice_headers[header] }}
+                    </th>
+                {% endfor %}
+                </tr>
+                {% for row in questions %}
+                    <tr>
+                    {% for header in headers[1:5] %}
+                        {% if header == "title" %}
+                        <td> <a href="/question/{{ row['id'] }}" >{{row[header]}} </a></td>
+                        {% else %}
+                        <td> {{row[header]}} </td>
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No results.</p>
+        {% endif %}
+    </body>
+</html>

@@ -16,14 +16,19 @@ QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
 ANSWERS_HEADER_NICE = ["ID", "Submission time", "Vote number", "Question ID", "Message", "Image"]
 IMAGE_DIRECTORY = sys.path[0] + "/images/"
 IMAGE_DIRECTORY_RELATIVE = "images/"
+ORDER_BY_DEFAULT = {"submission_time": "DESC"}
 
 
 def get_all_questions():
-    return connection.read_all(QUESTION_TABLE_NAME)
+    return connection.read_all(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT)
+
+
+def get_first_n_questions(n):
+    return connection.read_first_n(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, n)
 
 
 def get_all_answers():
-    return connection.read_all(ANSWER_TABLE_NAME)
+    return connection.read_all(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT)
 
 
 def get_specific_question(id_):
@@ -39,23 +44,19 @@ def get_specific_comment(id_):
 
 
 def get_all_answers_by_question_id(question_id):
-    return connection.find_all_by_header(ANSWER_TABLE_NAME, "question_id", question_id)
+    return connection.find_all_by_header(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT, "question_id", question_id)
 
 
 def get_comments_by_question_id(question_id):
-    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "question_id", question_id)
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "question_id", question_id)
 
 
 def get_comments_by_answer_id(answer_id):
-    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "answer_id", answer_id)
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "answer_id", answer_id)
 
 
 def get_question_by_answer_id(answer_id):
-    return connection.get_question_id_from_answer(ANSWER_TABLE_NAME, 'id', answer_id)
-
-
-def get_answer_ids_from_question(question_id):
-    return connection.get_answer_ids_from_question(QUESTION_TABLE_NAME, 'id', question_id)
+    return connection.get_columns_with_key(ANSWER_TABLE_NAME, ('question_id',), 'id', answer_id)
 
 
 def save_new_question(question):
@@ -135,3 +136,32 @@ def generate_answer_image_file_name(file_):
 def delete_image_file(image_path):
     if image_path:
         os.remove(sys.path[0] + "/images/" + image_path)
+
+
+def get_question_ids_with_content_from_questions(content):
+    look_in = ("title", "message")
+    return_columns = ('id',)
+    questions = connection.find_records_with_columns_like(QUESTION_TABLE_NAME, look_in, content, return_columns)
+    return set(question['id'] for question in questions)
+
+
+def get_question_ids_with_content_from_answers(content):
+    look_in = ("message",)
+    return_columns = ('question_id',)
+    answers = connection.find_records_with_columns_like(ANSWER_TABLE_NAME, look_in, content, return_columns)
+    return set(answer['question_id'] for answer in answers)
+
+
+def get_question_ids_with_content(content):
+    from_answers = get_question_ids_with_content_from_answers(content)
+    from_questions = get_question_ids_with_content_from_questions(content)
+    return from_answers | from_questions
+
+
+def get_all_questions_with_ids(question_ids):
+    return connection.find_all_by_header_multiple(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, 'id', question_ids)
+
+
+def get_search_results(content):
+    question_ids = get_question_ids_with_content(content)
+    return get_all_questions_with_ids(question_ids)
