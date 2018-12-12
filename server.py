@@ -30,7 +30,14 @@ def list_messages():
 def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
-    return render_template("question.html", question=question, answers=answers)
+    answer_ids = []
+    for dictionary in answers:
+        answer_ids.append(dictionary['id'])
+    question_comments = data_manager.get_comments_by_question_id(question_id)
+    answer_comments = []
+    for id in answer_ids:
+        answer_comments.append(data_manager.get_comments_by_answer_id(id))
+    return render_template("question.html", question=question, answers=answers, question_comments=question_comments, answer_comments=answer_comments)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])
@@ -82,6 +89,52 @@ def new_answer(question_id):
             data_manager.save_answer_image(request.files['image'], answer["image"])
         data_manager.save_new_answer(answer)
         return redirect('/question/{}'.format(question_id))
+
+
+@app.route('/question/<question_id>/new-comment/', methods=["GET", "POST"])
+def new_comment(question_id, answer_id = None):
+    if request.method == "GET":
+        question = data_manager.get_specific_question(question_id)
+        answer = data_manager.get_specific_answer(answer_id)
+        return render_template("new_comment.html", question=question, answer=answer)
+    if request.method == "POST":
+        comment = {}
+        for key in request.form:
+            if key in data_manager.COMMENTS_HEADER:
+                comment[key] = request.form[key]
+        comment["question_id"] = question_id
+        comment["answer_id"] = answer_id
+        comment["submission_time"] = datetime.now()
+        comment["edited_count"] = 0
+        data_manager.save_new_comment(comment)
+        return redirect('/question/{}'.format(question_id))
+
+
+@app.route('/answer/<answer_id>/new_comment/', methods=["GET", "POST"])
+def new_comment_to_specific_answer(answer_id):
+    question_id = data_manager.get_question_by_answer_id(answer_id)
+    if request.method == "GET":
+        question = data_manager.get_specific_question(question_id["question_id"])
+        answer = data_manager.get_specific_answer(answer_id)
+        return render_template("new_comment_to_answer.html", question=question, answer=answer)
+    if request.method == "POST":
+        comment = {}
+        for key in request.form:
+            if key in data_manager.COMMENTS_HEADER:
+                comment[key] = request.form[key]
+        comment["question_id"] = None
+        comment["answer_id"] = answer_id
+        comment["submission_time"] = datetime.now()
+        comment["edited_count"] = 0
+        data_manager.save_new_comment(comment)
+        return redirect('/question/{}'.format(question_id["question_id"]))
+
+
+@app.route("/comment/<comment_id>/delete")
+def delete_comment(comment_id):
+
+    data.manager.delete_comment(comment_id)
+    return redirect('/question/{}'.format(question_id))
 
 
 @app.route("/question/<question_id>/delete")

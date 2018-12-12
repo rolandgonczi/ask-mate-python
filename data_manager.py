@@ -6,8 +6,10 @@ import time
 
 QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
+COMMENTS_TABLE_NAME = "comment"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
+COMMENTS_HEADER = ["id", "question_id", "answer_id", "message", "submission_time", "edited_count"]
 QUESTIONS_HEADER_NICE = {'id': "ID", "submission_time": "Submission time",
                          'view_number': "View number", 'vote_number': "Vote number",
                          'title': "Title", 'message': "Message", 'image': "Image"}
@@ -32,12 +34,36 @@ def get_specific_answer(id_):
     return connection.find_first_by_header(ANSWER_TABLE_NAME, "id", id_)
 
 
+def get_specific_comment(id_):
+    return connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", id_)
+
+
 def get_all_answers_by_question_id(question_id):
     return connection.find_all_by_header(ANSWER_TABLE_NAME, "question_id", question_id)
 
 
+def get_comments_by_question_id(question_id):
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "question_id", question_id)
+
+
+def get_comments_by_answer_id(answer_id):
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, "answer_id", answer_id)
+
+
+def get_question_by_answer_id(answer_id):
+    return connection.get_question_id_from_answer(ANSWER_TABLE_NAME, 'id', answer_id)
+
+
+def get_answer_ids_from_question(question_id):
+    return connection.get_answer_ids_from_question(QUESTION_TABLE_NAME, 'id', question_id)
+
+
 def save_new_question(question):
     connection.save_record_into_table(QUESTION_TABLE_NAME, question)
+
+
+def save_new_comment(comment):
+    connection.save_record_into_table(COMMENTS_TABLE_NAME, comment)
 
 
 def save_new_answer(answer):
@@ -77,6 +103,10 @@ def update_question(question):
 
 def delete_answer(answer_id):
     connection.delete_record_from_database(ANSWER_TABLE_NAME, answer_id, "id")
+
+
+def delete_comment(comment_id):
+    connection.delete_record_from_database(COMMENTS_TABLE_NAME, comment_id, "id")
 
 
 def sort_data_by_header(data, header, reverse):

@@ -52,6 +52,31 @@
     <p><a href="/question/{{ question['id'] }}/edit">Update your question</a></p>
     <p><a href="/question/{{ question['id'] }}/delete"><strong>Delete question</strong></a></p>
     </table>
+    <p><a href="/question/{{ question['id'] }}/new-comment/">Add new comment</a></p>
+    <h3>Comments:</h3>
+    {% if question_comments %}
+        {% for comment in question_comments %}
+            <h4>Comment #{{ comment['id'] }}</h4>
+            <p>{{ comment['message'] }}</p>
+            <table>
+                <tr>
+                    <th>
+                        Submission Time:
+                    </th>
+                    <td>
+                        {{ comment['submission_time'] }}
+                    </td>
+                    <th>
+                        Edited:
+                    </th>
+                    <td>
+                        {{ comment['edited_count'] }}
+                    </td>
+                </tr>
+            </table>
+            <p><a href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
+        {% endfor %}
+    {% endif %}
     <p><a href="/question/{{ question['id'] }}/new-answer/">Add new answer</a></p>
     <h2>Answers:</h2>
     {% if answers %}
@@ -95,6 +120,33 @@
                     </td>
                 </tr>
             </table>
+            <a href="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}">Comment answer</a></p>
+            <h3>Comments:</h3>
+            {% if answer_comments %}
+                {% for comment in question_comments %}
+                    {% if comment['answer_id'] == answer['id'] %}
+                        <h4>Comment #{{ comment['id'] }}</h4>
+                        <p>{{ comment['message'] }}</p>
+                        <table>
+                            <tr>
+                                <th>
+                                    Submission Time:
+                                </th>
+                                <td>
+                                    {{ comment['submission_time'] }}
+                                </td>
+                                <th>
+                                    Edited:
+                                </th>
+                                <td>
+                                    {{ comment['edited_count'] }}
+                                </td>
+                            </tr>
+                        </table>
+                    <p><a href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             <p><a href="/answer/{{ answer['id'] }}/delete">Delete answer</a></p>
         {% endfor %}
     {% else %}
