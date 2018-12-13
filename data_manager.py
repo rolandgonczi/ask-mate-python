@@ -3,6 +3,7 @@ import connection
 import util
 import sys
 import time
+from datetime import datetime
 
 QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
@@ -220,3 +221,33 @@ def delete_tags_for_question(question_id):
 def delete_specific_tag_from_question(question_id, tag_id):
     criteria = {'question_id': question_id, 'tag_id': tag_id}
     connection.delete_record_by_multiple_headers(QUESTION_TAG_CONNECTION_TABLE, criteria)
+
+
+def get_answer_comments_for_answers(answers):
+    comments = []
+    for answer in answers:
+        comments.extend(get_comments_by_answer_id(answer["id"]))
+    return comments
+
+
+def add_new_question(form, files):
+    question = {}
+    for key in form:
+        if key in QUESTIONS_HEADER:
+            question[key] = form[key]
+    question["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    question["view_number"] = 0
+    question["vote_number"] = 0
+    if files['image']:
+        question["image"] = generate_question_image_file_name(request.files['image'])
+        save_question_image(files['image'], question["image"])
+    save_new_question(question)
+
+def get_question_id_for_comment(comment):
+    if comment["question_id"] is not None:
+        question_id = comment["question_id"]
+    else:
+        answer_id = comment["answer_id"]
+        answer = get_specific_answer(answer_id)
+        question_id = answer["question_id"]
+    return question_id
