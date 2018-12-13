@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import data_manager
-import time
 import sys
-from datetime import datetime
 
 app = Flask(__name__)
 UI_FILE_PATH = sys.path[0] + "/ui"
@@ -54,14 +52,11 @@ def ask_question():
 
 @app.route('/question/<question_id>/edit', methods=["GET", "POST"])
 def edit_question(question_id):
-    question = data_manager.get_specific_question(question_id)
     if request.method == "GET":
+        question = data_manager.get_specific_question(question_id)
         return render_template("update_question.html", question=question)
     if request.method == "POST":
-        new_question = request.form
-        for key in new_question:
-            question[key] = new_question[key]
-        data_manager.update_question(question)
+        data_manager.update_question(request.form, question_id)
         return redirect(url_for('show_question', question_id=question_id))
 
 
@@ -71,10 +66,7 @@ def edit_answer(answer_id):
     if request.method == "GET":
         return render_template("update_answer.html", answer=answer)
     if request.method == "POST":
-        new_answer = request.form
-        for key in new_answer:
-            answer[key] = new_answer[key]
-        data_manager.update_answer(answer)
+        data_manager.update_answer(request.form, answer_id)
         return redirect(url_for('show_question', question_id=answer["question_id"]))
 
 
@@ -84,14 +76,12 @@ def edit_comment(comment_id):
     if request.method == "GET":
         return render_template("update_comment.html", comment=comment)
     if request.method == "POST":
-        new_comment = request.form
-        for key in new_comment:
-            comment[key] = new_comment[key]
+        for key in request.form:
+            comment[key] = request.form[key]
         if comment["edited_count"] == None:
             comment["edited_count"] = 1
         else:
             comment["edited_count"] += 1
-        print(comment["edited_count"])
         data_manager.update_comment(comment)
         question_id = data_manager.get_question_id_for_comment(comment)
         return redirect(url_for('show_question', question_id=question_id))
@@ -111,8 +101,7 @@ def new_answer(question_id):
 def new_comment_for_question(question_id):
     if request.method == "GET":
         question = data_manager.get_specific_question(question_id)
-        answer = data_manager.get_specific_answer(answer_id)
-        return render_template("new_comment.html", question=question, answer=answer)
+        return render_template("new_comment.html", question=question)
     if request.method == "POST":
         data_manager.add_new_comment(request.form, question_id=question_id)
         return redirect('/question/{}'.format(question_id))

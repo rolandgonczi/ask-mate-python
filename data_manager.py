@@ -105,12 +105,12 @@ def get_question_for_answer_from_id(answer_id):
     return get_specific_question(answer['question_id'])
 
 
-def update_question(question):
-    connection.update_record_in_database(QUESTION_TABLE_NAME, question, question["id"], "id")
+def update_question(new_question, question_id):
+    connection.update_record_in_database(QUESTION_TABLE_NAME, new_question, question_id, "id")
 
 
-def update_answer(answer):
-    connection.update_record_in_database(ANSWER_TABLE_NAME, answer, answer["id"], "id")
+def update_answer(new_answer, answer_id):
+    connection.update_record_in_database(ANSWER_TABLE_NAME, new_answer, answer_id, "id")
 
 
 def update_comment(comment):
