@@ -201,7 +201,11 @@ def sql_from_list(list, join_by=', ', type=SQL_IDENTIFIER):
 
 @database_common.connection_handler
 def find_records_with_columns_like(cursor, table_name, columns, string, columns_to_return=('*')):
-    criteria = sql_from_list_and_single(columns, '%' + string + '%', ' LIKE ', ' OR ')
+    criteria = sql.SQL(' OR ').join(
+        (sql.SQL("LOWER({column}) LIKE LOWER({string})").format(column=sql.Identifier(column),
+                                                               string=sql.Literal("%" + string + "%"))
+         for column in columns)
+    )
     columns_to_return = sql_from_list(columns_to_return)
     cursor.execute(sql.SQL("""
                             SELECT {columns_to_return} FROM {table_name}
