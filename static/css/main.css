@@ -13,6 +13,7 @@ h1 {
 }
 
 a.button {
+    text-indent: 20px;
     color: #004257;
     background-color: darkorange;
     padding: 5px 10px 5px 10px;
@@ -21,6 +22,29 @@ a.button {
     transition-duration: 0.5s;
 }
 
+input {
+    color: #004257;
+    background-color: whitesmoke;
+    padding: 5px 10px 5px 10px;
+    margin: 5px 10px 5px 10px;
+    border-radius: 25px;
+    transition-duration: 0.5s;
+}
+
+input:hover {
+    background-color: navajowhite;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid navajowhite;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
+}
 
 footer {
     margin: 50px 10px 5px 10px;
@@ -52,7 +76,12 @@ footer {
 }
 
 .content-wrapper {
-    padding: 5%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid navajowhite;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  resize: none;
 }
 
 .selector {
