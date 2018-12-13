@@ -34,13 +34,8 @@ def show_question(question_id):
     question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
     question_tags = data_manager.get_tags_for_question(question_id)
-    answer_ids = []
-    for dictionary in answers:
-        answer_ids.append(dictionary['id'])
     question_comments = data_manager.get_comments_by_question_id(question_id)
-    answer_comments = []
-    for id in answer_ids:
-        answer_comments.extend(data_manager.get_comments_by_answer_id(id))
+    answer_comments = data_manager.get_answer_comments_for_answers(answers)
     return render_template("question.html",
                            question=question, answers=answers,
                            question_comments=question_comments,
@@ -53,17 +48,7 @@ def ask_question():
     if request.method == "GET":
         return render_template("ask.html")
     if request.method == "POST":
-        question = {}
-        for key in request.form:
-            if key in data_manager.QUESTIONS_HEADER:
-                question[key] = request.form[key]
-        question["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        question["view_number"] = 0
-        question["vote_number"] = 0
-        if request.files['image']:
-            question["image"] = data_manager.generate_question_image_file_name(request.files['image'])
-            data_manager.save_question_image(request.files['image'], question["image"])
-        data_manager.save_new_question(question)
+        data_manager.add_new_question(request.form, request.files)
         return redirect(url_for('index'))
 
 
@@ -103,12 +88,7 @@ def edit_comment(comment_id):
         for key in new_comment:
             comment[key] = new_comment[key]
         data_manager.update_comment(comment)
-        if comment["question_id"] is not None:
-            question_id = comment["question_id"]
-        else:
-            answer_id = comment["answer_id"]
-            answer = data_manager.get_specific_answer(answer_id)
-            question_id = answer["question_id"]
+        question_id = data_manager.get_question_id_for_comment(comment)
         return redirect(url_for('show_question', question_id=question_id))
 
 
@@ -173,12 +153,7 @@ def new_comment_to_specific_answer(answer_id):
 @app.route("/comment/<int:comment_id>/delete")
 def delete_comment(comment_id):
     comment = data_manager.get_specific_comment(comment_id)
-    if comment["question_id"]:
-        question_id = comment["question_id"]
-    else:
-        answer_id = comment["answer_id"]
-        answer = data_manager.get_specific_answer(answer_id)
-        question_id = answer["question_id"]
+    question_id = data_manager.get_question_id_for_comment(comment)
     data_manager.delete_comment(comment_id)
     return redirect('/question/{}'.format(question_id))
 
