@@ -100,36 +100,18 @@ def new_answer(question_id):
         question = data_manager.get_specific_question(question_id)
         return render_template("new_answer.html", question=question)
     if request.method == "POST":
-        answer = {}
-        for key in request.form:
-            if key in data_manager.ANSWERS_HEADER:
-                answer[key] = request.form[key]
-        answer["question_id"] = question_id
-        answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        answer["vote_number"] = 0
-        if request.files['image']:
-            answer["image"] = data_manager.generate_answer_image_file_name(request.files['image'])
-            data_manager.save_answer_image(request.files['image'], answer["image"])
-        data_manager.save_new_answer(answer)
+        data_manager.add_new_answer(request.form, request.files, question_id)
         return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/new-comment/', methods=["GET", "POST"])
-def new_comment_for_question(question_id, answer_id = None):
+def new_comment_for_question(question_id):
     if request.method == "GET":
         question = data_manager.get_specific_question(question_id)
         answer = data_manager.get_specific_answer(answer_id)
         return render_template("new_comment.html", question=question, answer=answer)
     if request.method == "POST":
-        comment = {}
-        for key in request.form:
-            if key in data_manager.COMMENTS_HEADER:
-                comment[key] = request.form[key]
-        comment["question_id"] = question_id
-        comment["answer_id"] = answer_id
-        comment["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        comment["edited_count"] = 0
-        data_manager.save_new_comment(comment)
+        data_manager.add_new_comment(request.form, question_id=question_id)
         return redirect('/question/{}'.format(question_id))
 
 
@@ -140,15 +122,7 @@ def new_comment_to_specific_answer(answer_id):
         answer = data_manager.get_specific_answer(answer_id)
         return render_template("new_comment_to_answer.html", answer=answer)
     if request.method == "POST":
-        comment = {}
-        for key in request.form:
-            if key in data_manager.COMMENTS_HEADER:
-                comment[key] = request.form[key]
-        comment["question_id"] = None
-        comment["answer_id"] = answer_id
-        comment["submission_time"] = datetime.now()
-        comment["edited_count"] = 0
-        data_manager.save_new_comment(comment)
+        data_manager.add_new_comment(request.form, answer_id=answer_id)
         return redirect(url_for('show_question', question_id=question_id))
 
 
@@ -168,10 +142,7 @@ def delete_question(question_id):
 
 @app.route("/answer/<int:answer_id>/delete")
 def delete_answer(answer_id):
-    answer = data_manager.get_specific_answer(answer_id)
-    question_id = answer["question_id"]
-    data_manager.delete_image_file(answer["image"])
-    data_manager.delete_answer(answer_id)
+    question_id = data_manager.delete_answer(answer_id)
     return redirect(url_for('show_question', question_id=question_id))
 
 
@@ -230,12 +201,7 @@ def new_tag_for_question(question_id):
                                tags_for_question=tags_for_question,
                                question_id=question_id)
     elif request.method == 'POST':
-        if request.form['new_tag']:
-            data_manager.save_new_tag(request.form['new_tag'])
-            tag_id = data_manager.get_tag_id_by_name(request.form['new_tag'])
-        else:
-            tag_id = request.form['existing_tag']
-        data_manager.save_new_tag_for_question(question_id, tag_id)
+        data_manager.add_tag_to_question(request.form, question_id)
         return redirect(url_for('show_question', question_id=question_id))
 
 

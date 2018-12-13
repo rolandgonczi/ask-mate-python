@@ -118,8 +118,11 @@ def update_comment(comment):
 
 
 def delete_answer(answer_id):
+    answer = get_specific_answer(answer_id)
+    delete_image_file(answer["image"])
     connection.delete_record_from_database(COMMENTS_TABLE_NAME, answer_id, "answer_id")
     connection.delete_record_from_database(ANSWER_TABLE_NAME, answer_id, "id")
+    return answer["question_id"]
 
 
 def delete_comment(comment_id):
@@ -230,6 +233,17 @@ def get_answer_comments_for_answers(answers):
     return comments
 
 
+def get_question_id_for_comment(comment):
+    if comment["question_id"] is not None:
+        question_id = comment["question_id"]
+    else:
+        answer_id = comment["answer_id"]
+        answer = get_specific_answer(answer_id)
+        question_id = answer["question_id"]
+    return question_id
+
+
+
 def add_new_question(form, files):
     question = {}
     for key in form:
@@ -243,11 +257,36 @@ def add_new_question(form, files):
         save_question_image(files['image'], question["image"])
     save_new_question(question)
 
-def get_question_id_for_comment(comment):
-    if comment["question_id"] is not None:
-        question_id = comment["question_id"]
+
+def add_new_answer(form, files, question_id):
+    answer = {}
+    for key in form:
+        if key in ANSWERS_HEADER:
+            answer[key] = form[key]
+    answer["question_id"] = question_id
+    answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    answer["vote_number"] = 0
+    if files['image']:
+        answer["image"] = generate_answer_image_file_name(files['image'])
+        save_answer_image(files['image'], answer["image"])
+    save_new_answer(answer)
+
+def add_new_comment(form, question_id=None, answer_id=None):
+    comment = {}
+    for key in form:
+        if key in COMMENTS_HEADER:
+            comment[key] = form[key]
+    comment["question_id"] = question_id
+    comment["answer_id"] = answer_id
+    comment["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    comment["edited_count"] = 0
+    save_new_comment(comment)
+
+
+def add_tag_to_question(form, question_id):
+    if form['new_tag']:
+        save_new_tag(form['new_tag'])
+        tag_id = get_tag_id_by_name(form['new_tag'])
     else:
-        answer_id = comment["answer_id"]
-        answer = get_specific_answer(answer_id)
-        question_id = answer["question_id"]
-    return question_id
+        tag_id = form['existing_tag']
+    save_new_tag_for_question(question_id, tag_id)
