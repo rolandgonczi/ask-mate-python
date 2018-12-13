@@ -263,7 +263,7 @@ def add_new_question(form, files):
     question["view_number"] = 0
     question["vote_number"] = 0
     if files['image']:
-        question["image"] = generate_question_image_file_name(request.files['image'])
+        question["image"] = generate_question_image_file_name(files['image'])
         save_question_image(files['image'], question["image"])
     save_new_question(question)
 
