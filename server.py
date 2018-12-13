@@ -103,7 +103,6 @@ def edit_comment(comment_id):
         for key in new_comment:
             comment[key] = new_comment[key]
         data_manager.update_comment(comment)
-        print(comment["question_id"])
         if comment["question_id"] is not None:
             question_id = comment["question_id"]
         else:

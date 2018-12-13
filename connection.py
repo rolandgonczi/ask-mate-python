@@ -83,7 +83,6 @@ def find_first_by_multiple_headers(cursor, table_name, criteria):
 
 @database_common.connection_handler
 def find_all_by_header_multiple_values(cursor, table_name, order_by, header, values):
-    print('Values:', list(values))
     if values:
         if order_by:
             order_by = sql.SQL(' ').join((sql.SQL('ORDER BY'),
