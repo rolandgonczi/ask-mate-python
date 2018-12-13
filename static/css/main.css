@@ -13,6 +13,7 @@ h1 {
 }
 
 a.button {
+    text-indent: 20px;
     color: #004257;
     background-color: darkorange;
     padding: 5px 10px 5px 10px;
