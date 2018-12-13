@@ -87,7 +87,10 @@ def edit_comment(comment_id):
         new_comment = request.form
         for key in new_comment:
             comment[key] = new_comment[key]
-        comment["edited_count"] += 1
+        if comment["edited_count"] == None:
+            comment["edited_count"] = 1
+        else:
+            comment["edited_count"] += 1
         print(comment["edited_count"])
         data_manager.update_comment(comment)
         question_id = data_manager.get_question_id_for_comment(comment)
