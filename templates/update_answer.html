@@ -4,7 +4,9 @@
     <title>AskMate | Update {{ answer['id'] }}</title>
 </head>
 <body>
-    <h1>Update your answer</h1>
+    <h1>Question:</h1>
+    <p>{{ question_message }}</p>
+    <h2>Update your answer</h2>
     <form action="/answer/{{ answer['id'] }}/edit" method="post">
         <p><label>
             Answer<br>

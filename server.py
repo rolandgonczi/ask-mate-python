@@ -64,7 +64,10 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     answer = data_manager.get_specific_answer(answer_id)
     if request.method == "GET":
-        return render_template("update_answer.html", answer=answer)
+        question_message = data_manager.get_question_for_answer_from_id(answer_id)["message"]
+        return render_template("update_answer.html",
+                               answer=answer,
+                               question_message=question_message)
     if request.method == "POST":
         data_manager.update_answer(request.form, answer_id)
         return redirect(url_for('show_question', question_id=answer["question_id"]))

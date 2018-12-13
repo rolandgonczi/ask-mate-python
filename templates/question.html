@@ -6,9 +6,12 @@
 </head>
 <body>
     <a class="button" href="{{url_for('list_messages')}}">Back to list</a>
-    <h1>{{ question['title'] }}</h1>
-    <p><a class="button" href="/question/{{ question['id'] }}/edit">Update your question</a> <a class="button" href="/question/{{ question['id'] }}/delete">Delete question</strong></a></p>
-    <div class="content-wrapper">
+    <h1 class="question-title">{{ question['title'] }}</h1>
+    <p>
+        <a class="button edit" href="/question/{{ question['id'] }}/edit">🖋️</a>
+        <a class="button delete" href="/question/{{ question['id'] }}/delete">❌</strong></a>
+    </p>
+    <div class="message question">
         <p>{{ question['message'] }}</p>
     </div>
     <div class="tags">
@@ -17,7 +20,7 @@
                 {% for tag in question_tags %}
                     <li>{{ tag["name"] }}
                         <a href="{{url_for('delete_tag_from_question', question_id=question['id'], tag_id=tag['id'])}}" class="delete">
-                            X
+                            ❌
                         </a>
                     </li>
                 {% endfor %}
@@ -68,13 +71,15 @@
             </td>
         </tr>
     </table>
-    <h3>Comments:</h3>
     <p><a class="button" href="/question/{{ question['id'] }}/new-comment/">Add new comment</a></p>
+    <div class="comment">
     {% if question_comments %}
         {% for comment in question_comments %}
-            <h4>Comment #{{ comment['id'] }}</h4>
-            <p><a class="button" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
-            <p>{{ comment['message'] }}</p>
+            <ul>
+                <li><a class="button edit" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">🖋️</a></li>
+                <li><a class="button delete" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">❌</a></li>
+                <li><div class="message">{{ comment['message'] }}</div></li>
+            </ul>
             <table>
                 <tr>
                     <th>
@@ -91,17 +96,20 @@
                     </td>
                 </tr>
             </table>
-            <p><a class="button" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">Edit comment</a>
-                <a class="button" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
         {% endfor %}
     {% endif %}
+    </div>
     <h2>Answers:</h2>
     <p><a class="button" href="/question/{{ question['id'] }}/new-answer/">Add new answer</a></p>
     {% if answers %}
         {% for answer in answers %}
-            <h3>Answer #{{ answer['id'] }}</h3>
-            <p><a class="button" href="/answer/{{ answer['id'] }}/delete">Delete answer</a></p>
-            <p>{{ answer['message'] }}</p>
+            <p>
+                <a class="button edit" href="/answer/{{ answer['id'] }}/edit">🖋️</a>
+                <a class="button delete" href="/answer/{{ answer['id'] }}/delete">❌</a>
+            </p>
+            <div class="message answer">
+                <p>{{ answer['message'] }}</p>
+            </div>
             {% if answer['image'] %}
                 <p><a target="_blank" rel="noopener noreferrer" href="{{ url_for('index') + 'images/' + answer['image'] }}">
                     <img src="{{ url_for('index') + 'images/' + answer['image'] }}" height="160">
@@ -139,14 +147,16 @@
                     </td>
                 </tr>
             </table>
-            <h3>Comments:</h3>
-            <a class="button" href="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}">Comment answer</a></p>
+            <a class="button" href="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}">Comment answer</a>
+        <div class="comment">
             {% if answer_comments %}
                 {% for comment in answer_comments %}
                     {% if comment['answer_id'] == answer['id'] %}
-                        <h4>Comment #{{ comment['id'] }}</h4>
-                        <p><a class="button" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
-                        <p>{{ comment['message'] }}</p>
+                        <ul>
+                            <li><a class="button edit" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">🖋️</a></li>
+                            <li><a class="button delete" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">❌</a></li>
+                            <li><div class="message">{{ comment['message'] }}</div></li>
+                        </ul>
                         <table>
                             <tr>
                                 <th>
@@ -163,11 +173,11 @@
                                 </td>
                             </tr>
                         </table>
-                    <p><a class="button" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">Edit comment</a>
-                    <a class="button" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">Delete comment</a></p>
+                    <p></p>
                     {% endif %}
                 {% endfor %}
             {% endif %}
+        </div>
         {% endfor %}
     {% else %}
         <p>No answers yet.</p>

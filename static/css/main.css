@@ -1,5 +1,5 @@
 body {
-    background-color: ghostwhite;
+    background-color: #f6ffcf;
     color: #004257;
     padding: 5px 10px 5px 10px;
 }
@@ -25,8 +25,8 @@ a.button {
 input {
     color: #004257;
     background-color: whitesmoke;
-    padding: 5px 10px 5px 10px;
-    margin: 5px 10px 5px 10px;
+    padding: 5px 10px;
+    margin: 5px 10px;
     border-radius: 25px;
     transition-duration: 0.5s;
 }
@@ -63,6 +63,7 @@ footer {
     color: black;
     padding: 0 3px;
     opacity: 0.3;
+    text-decoration: none;
 }
 
 .tags li:hover a {
@@ -75,15 +76,82 @@ footer {
     padding: 0;
 }
 
-.content-wrapper {
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid navajowhite;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
+.message {
+    padding: 0.5em 0.5em;
+    box-sizing: border-box;
+    border: 2px solid navajowhite;
+    border-radius: 4px;
+    background-color: rgba(248, 214, 74, 0.2);
+    resize: none;
+    margin-left: 1em;
+}
+
+.question .message {
+
+}
+
+.answer .message {
+
+}
+
+.comment .message{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.comment .button{
+    font-size: smaller;
+    margin: 0;
+    text-decoration: none;
+}
+
+.button.delete:hover{
+    background-color: orangered;
+}
+
+.button.edit:hover{
+    background-color: cadetblue;
+}
+
+.comment {
+    margin-left: 3em;
+    border-left: cadetblue 3px solid;
+    padding-left: 1em;
+}
+
+.comment table {
+    font-size: smaller;
+}
+
+.comment ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comment li {
+    display: inline-block;
+    margin: 0;
 }
 
 .selector {
     margin-bottom: 50px;
+}
+
+h1.question-title {
+    text-align: left;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    width: max-content;
+    background: none;
+    border-bottom: chocolate 2px;
+    border-bottom-style: solid;
+    margin-bottom: 1em;
+}
+
+a.button {
+    text-decoration: none;
+}
+
+a.button:hover {
+    background-color: palegreen;
 }

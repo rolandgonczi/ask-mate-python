@@ -195,14 +195,15 @@ def get_all_tags():
 
 
 def save_new_tag(tag_name):
-    connection.save_record_into_table(TAG_TABLE_NAME, {'name': tag_name})
+    if not tag_exists(tag_name):
+        connection.save_record_into_table(TAG_TABLE_NAME, {'name': tag_name})
 
 
 def get_tag_id_by_name(tag_name):
     return connection.find_first_by_header(TAG_TABLE_NAME, 'name', tag_name)["id"]
 
 
-def check_if_tag_exists(tag_name):
+def tag_exists(tag_name):
     return bool(connection.find_first_by_header(TAG_TABLE_NAME, 'name', tag_name))
 
 
@@ -224,6 +225,15 @@ def delete_tags_for_question(question_id):
 def delete_specific_tag_from_question(question_id, tag_id):
     criteria = {'question_id': question_id, 'tag_id': tag_id}
     connection.delete_record_by_multiple_headers(QUESTION_TAG_CONNECTION_TABLE, criteria)
+    if not any_question_has_tag_by_id(tag_id):
+        print("should delete")
+        connection.delete_record_from_database(TAG_TABLE_NAME, tag_id, 'id')
+
+
+def any_question_has_tag_by_id(tag_id):
+    print("checks if exists")
+    print(bool(connection.find_first_by_header(QUESTION_TAG_CONNECTION_TABLE, 'tag_id', tag_id)))
+    return bool(connection.find_first_by_header(QUESTION_TAG_CONNECTION_TABLE, 'tag_id', tag_id))
 
 
 def get_answer_comments_for_answers(answers):
