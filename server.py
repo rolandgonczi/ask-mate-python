@@ -121,12 +121,15 @@ def new_comment_to_specific_answer(answer_id):
         return redirect(url_for('show_question', question_id=question_id))
 
 
-@app.route("/comment/<int:comment_id>/delete")
+@app.route("/comment/<int:comment_id>/delete", methods= ["GET", "POST"])
 def delete_comment(comment_id):
     comment = data_manager.get_specific_comment(comment_id)
     question_id = data_manager.get_question_id_for_comment(comment)
-    data_manager.delete_comment(comment_id)
-    return redirect('/question/{}'.format(question_id))
+    if request.method == "GET":
+        return render_template("confirm_delete.html", comment=comment, question_id=question_id)
+    elif request.method == "POST":
+        data_manager.delete_comment(comment_id)
+        return redirect('/question/{}'.format(question_id))
 
 
 @app.route("/question/<int:question_id>/delete")

@@ -155,3 +155,15 @@ a.button {
 a.button:hover {
     background-color: palegreen;
 }
+
+.confirm-delete form {
+    display: inline-block;
+}
+
+.confirm-delete form#confirm input:hover {
+    background-color: orangered;
+}
+
+.confirm-delete form#cancel input:hover {
+    background-color: aquamarine;
+}
