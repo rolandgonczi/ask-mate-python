@@ -262,9 +262,13 @@ def add_new_question(form, files):
     question["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     question["view_number"] = 0
     question["vote_number"] = 0
+    print("before image")
+    print(files)
     if files['image']:
+        print("in image")
         question["image"] = generate_question_image_file_name(files['image'])
         save_question_image(files['image'], question["image"])
+    print("after image")
     save_new_question(question)
 
 
