@@ -46,6 +46,7 @@ def ask_question():
     if request.method == "GET":
         return render_template("ask.html")
     if request.method == "POST":
+        print(request.files)
         data_manager.add_new_question(request.form, request.files)
         return redirect(url_for('index'))
 
