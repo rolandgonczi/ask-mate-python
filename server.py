@@ -210,6 +210,11 @@ def delete_tag_from_question(question_id, tag_id):
     return redirect(url_for('show_question', question_id=question_id))
 
 
+@app.route('/login', methods= ['GET', 'POST'])
+def login():
+    pass
+
+
 
 if __name__ == '__main__':
     app.run(
