@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 import data_manager
 import sys
+import security
 
 app = Flask(__name__)
 UI_FILE_PATH = sys.path[0] + "/ui"
+
+app.secret_key = b'r[_Drea+%!"edCElf>>,'
 
 
 @app.route('/')
@@ -212,7 +215,25 @@ def delete_tag_from_question(question_id, tag_id):
 
 @app.route('/login', methods= ['GET', 'POST'])
 def login():
-    pass
+    if request.method == 'GET':
+        return render_template('login.html')
+    if request.method == 'POST':
+        if request.form['form'] == 'login':
+            if security.verify_password(
+                    request.form['password'],
+                    data_manager.get_password_for_username(request.form['username'])):
+                session["username"] = request.form['username']
+                session["password"] = request.form['password']
+
+                return redirect(url_for(index))
+            else:
+                return render_template('login.html', invalid=True)
+        if request.form['form'] == 'register':
+            data_manager.save_new_user(request.form['username'], security.hash_password(request.form['password']))
+            session["username"] = request.form['username']
+            session["password"] = data_manager.get_password_for_username(request.form['username'])
+
+            return redirect(url_for(index))
 
 
 

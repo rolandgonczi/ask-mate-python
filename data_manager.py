@@ -9,6 +9,7 @@ QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
 COMMENTS_TABLE_NAME = "comment"
 TAG_TABLE_NAME = "tag"
+USER_TABLE_NAME = "user"
 QUESTION_TAG_CONNECTION_TABLE = "question_tag"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
@@ -300,3 +301,11 @@ def add_tag_to_question(form, question_id):
     else:
         tag_id = form['existing_tag']
     save_new_tag_for_question(question_id, tag_id)
+
+
+def get_password_for_username(username):
+    return connection.find_first_by_header(USER_TABLE_NAME, "username", username)["password"]
+
+
+def save_new_user(username, password):
+    connection.save_record_into_table(USER_TABLE_NAME, {"username": username, "password": password})
