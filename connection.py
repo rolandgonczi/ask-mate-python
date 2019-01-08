@@ -226,3 +226,11 @@ def delete_record_by_multiple_headers(cursor, table_name, criteria):
                             """).format(table_name=sql.Identifier(table_name),
                                         criteria=criteria)
                    )
+
+
+@database_common.connection_handler
+def list_all_user_data(cursor, table_name, header):
+    cursor.execute(sql.SQL("""
+                            SELECT id, username, COUNT(answer.user_id), COUNT(question.user_id)  FROM 
+                            WHERE {criteria}
+                            """).format)
