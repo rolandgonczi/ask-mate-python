@@ -35,16 +35,22 @@ def get_all_answers():
     return connection.read_all(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT)
 
 
-def get_specific_question(id_):
-    return connection.find_first_by_header(QUESTION_TABLE_NAME, "id", id_)
+def get_specific_question(question_id):
+    question = connection.find_first_by_header(QUESTION_TABLE_NAME, "id", question_id)
+    question["username"] = get_username_by_user_id(question["user_id"])
+    return question
 
 
-def get_specific_answer(id_):
-    return connection.find_first_by_header(ANSWER_TABLE_NAME, "id", id_)
+def get_specific_answer(answer_id):
+    answer = connection.find_first_by_header(ANSWER_TABLE_NAME, "id", answer_id)
+    answer["username"] = get_username_by_user_id(answer["user_id"])
+    return answer
 
 
-def get_specific_comment(id_):
-    return connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", id_)
+def get_specific_comment(comment_id):
+    comment = connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", comment_id)
+    comment["username"] = get_username_by_user_id(comment["user_id"])
+    return comment
 
 
 def get_all_answers_by_question_id(question_id):
@@ -320,6 +326,10 @@ def save_new_user(username, password):
 
 def get_user_by_username(username):
     return connection.find_first_by_header(USER_TABLE_NAME, "username", username)
+
+
+def get_username_by_user_id(user_id):
+    return connection.find_first_by_header(USER_TABLE_NAME, "id", user_id)["username"]
 
 
 def get_user_id_for_question(question_id):
