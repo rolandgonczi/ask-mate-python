@@ -9,7 +9,7 @@ QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
 COMMENTS_TABLE_NAME = "comment"
 TAG_TABLE_NAME = "tag"
-USER_TABLE_NAME = "user"
+USER_TABLE_NAME = "users"
 QUESTION_TAG_CONNECTION_TABLE = "question_tag"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
@@ -255,7 +255,7 @@ def get_question_id_for_comment(comment):
 
 
 
-def add_new_question(form, files):
+def add_new_question(form, files, user_id):
     question = {}
     for key in form:
         if key in QUESTIONS_HEADER:
@@ -263,13 +263,14 @@ def add_new_question(form, files):
     question["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     question["view_number"] = 0
     question["vote_number"] = 0
+    question["user_id"] = user_id
     if files.get('image'):
         question["image"] = generate_question_image_file_name(files['image'])
         save_question_image(files['image'], question["image"])
     save_new_question(question)
 
 
-def add_new_answer(form, files, question_id):
+def add_new_answer(form, files, question_id, user_id):
     answer = {}
     for key in form:
         if key in ANSWERS_HEADER:
@@ -277,12 +278,13 @@ def add_new_answer(form, files, question_id):
     answer["question_id"] = question_id
     answer["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     answer["vote_number"] = 0
+    answer["user_id"] = user_id
     if files.get('image'):
         answer["image"] = generate_answer_image_file_name(files['image'])
         save_answer_image(files['image'], answer["image"])
     save_new_answer(answer)
 
-def add_new_comment(form, question_id=None, answer_id=None):
+def add_new_comment(form, user_id, question_id=None, answer_id=None):
     comment = {}
     for key in form:
         if key in COMMENTS_HEADER:
@@ -291,6 +293,7 @@ def add_new_comment(form, question_id=None, answer_id=None):
     comment["answer_id"] = answer_id
     comment["submission_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     comment["edited_count"] = 0
+    comment["user_id"] = user_id
     save_new_comment(comment)
 
 
@@ -304,7 +307,7 @@ def add_tag_to_question(form, question_id):
 
 
 def get_password_for_username(username):
-    user = connection.find_first_by_header(USER_TABLE_NAME, "username", username)
+    user = get_user_by_username(username)
     if user:
         return user.get("password", False)
     else:
@@ -313,3 +316,19 @@ def get_password_for_username(username):
 
 def save_new_user(username, password):
     connection.save_record_into_table(USER_TABLE_NAME, {"username": username, "password": password})
+
+
+def get_user_by_username(username):
+    return connection.find_first_by_header(USER_TABLE_NAME, "username", username)
+
+
+def get_user_id_for_question(question_id):
+    return connection.find_first_by_header(QUESTION_TABLE_NAME, "id", question_id)['user_id']
+
+
+def get_user_id_for_answer(answer_id):
+    return connection.find_first_by_header(ANSWER_TABLE_NAME, "id", answer_id)['user_id']
+
+
+def get_user_id_for_comment(comment_id):
+    return connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", comment_id)['user_id']
