@@ -7,10 +7,12 @@
 <body>
     <a class="button" href="{{url_for('list_messages')}}">Back to list</a>
     <h1 class="question-title">{{ question['title'] }}</h1>
+    {% if user_id == question['user_id'] %}
     <p>
         <a class="button edit" href="/question/{{ question['id'] }}/edit">🖋️</a>
         <a class="button delete" href="/question/{{ question['id'] }}/delete">❌</strong></a>
     </p>
+    {% endif %}
     <div class="message question">
         <p>{{ question['message'] }}</p>
     </div>
@@ -32,9 +34,17 @@
         <img src="{{ url_for('index') + 'images/' + question['image'] }}" height="128">
     </a></p>
     {% endif %}
+    {% if user_id == question['user_id'] %}
     <p><a class="button" href="{{url_for('new_tag_for_question', question_id = question['id'])}}">Add tag</a></p>
+    {% endif %}
     <table>
         <tr>
+            <th>
+                Question by:
+            </th>
+            <td>
+                {{ question['username'] }}
+            </td>
             <th>
                 Submission Time:
             </th>
@@ -76,12 +86,20 @@
     {% if question_comments %}
         {% for comment in question_comments %}
             <ul>
+                {% if user_id == comment['user_id'] %}
                 <li><a class="button edit" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">🖋️</a></li>
                 <li><a class="button delete" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">❌</a></li>
+                {% endif %}
                 <li><div class="message">{{ comment['message'] }}</div></li>
             </ul>
             <table>
                 <tr>
+                    <th>
+                        Comment by:
+                    </th>
+                    <td>
+                        {{ comment['username'] }}
+                    </td>
                     <th>
                         Submission Time:
                     </th>
@@ -100,13 +118,17 @@
     {% endif %}
     </div>
     <h2>Answers:</h2>
+    {% if not user_id == question['user_id'] %}
     <p><a class="button" href="/question/{{ question['id'] }}/new-answer/">Add new answer</a></p>
+    {% endif %}
     {% if answers %}
         {% for answer in answers %}
+            {% if user_id == answer['user_id'] %}
             <p>
                 <a class="button edit" href="/answer/{{ answer['id'] }}/edit">🖋️</a>
                 <a class="button delete" href="/answer/{{ answer['id'] }}/delete">❌</a>
             </p>
+            {% endif %}
             <div class="message answer">
                 <p>{{ answer['message'] }}</p>
             </div>
@@ -117,6 +139,12 @@
             {% endif %}
             <table>
                 <tr>
+                    <th>
+                        Answer by:
+                    </th>
+                    <td>
+                        {{ answer['username'] }}
+                    </td>
                     <th>
                         Submission Time:
                     </th>
@@ -153,12 +181,20 @@
                 {% for comment in answer_comments %}
                     {% if comment['answer_id'] == answer['id'] %}
                         <ul>
+                            {% if user_id == comment['user_id'] %}
                             <li><a class="button edit" href=" {{ url_for('edit_comment', comment_id=comment['id']) }}">🖋️</a></li>
                             <li><a class="button delete" href=" {{ url_for('delete_comment', comment_id=comment['id']) }}">❌</a></li>
+                            {% endif %}
                             <li><div class="message">{{ comment['message'] }}</div></li>
                         </ul>
                         <table>
                             <tr>
+                                <th>
+                                    Comment by:
+                                </th>
+                                <td>
+                                    {{ comment['username'] }}
+                                </td>
                                 <th>
                                     Submission Time:
                                 </th>
