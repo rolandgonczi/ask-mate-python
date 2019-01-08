@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate | Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <table>
+        <tr>
+            <th>
+                User ID:
+            </th>
+            <th>
+                Username:
+            </th>
+            <th>
+                Questions:
+            </th>
+            <th>
+                Answers:
+            </th>
+            <th>
+                Reputation:
+            </th>
+            {% for user in users %}
+                    <tr>
+                    {% for data in user %}
+                        <td>
+                            {{ data }}
+                        </td>
+                    </tr>
+                </table>
+</body>
+</html>
