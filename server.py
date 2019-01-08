@@ -127,12 +127,15 @@ def edit_comment(comment_id):
 @app.route('/question/<question_id>/new-answer/', methods=["GET", "POST"])
 @need_login(post_type="any")
 def new_answer(question_id):
-    if request.method == "GET":
-        question = data_manager.get_specific_question(question_id)
-        return render_template("new_answer.html", question=question)
-    if request.method == "POST":
-        data_manager.add_new_answer(request.form, request.files, question_id, session["user_id"])
-        return redirect(url_for('show_question', question_id=question_id))
+    question = data_manager.get_specific_question(question_id)
+    if session["user_id"] != question["user_id"]:
+        if request.method == "GET":
+            return render_template("new_answer.html", question=question)
+        if request.method == "POST":
+            data_manager.add_new_answer(request.form, request.files, question_id, session["user_id"])
+            return redirect(url_for('show_question', question_id=question_id))
+    else:
+        return render_template('invalid_user.html')
 
 
 @app.route('/question/<question_id>/new-comment/', methods=["GET", "POST"])
