@@ -40,6 +40,12 @@
     <table>
         <tr>
             <th>
+                Question by:
+            </th>
+            <td>
+                {{ question['user_id'] }}
+            </td>
+            <th>
                 Submission Time:
             </th>
             <td>
@@ -89,6 +95,12 @@
             <table>
                 <tr>
                     <th>
+                        Comment by:
+                    </th>
+                    <td>
+                        {{ comment['user_id'] }}
+                    </td>
+                    <th>
                         Submission Time:
                     </th>
                     <td>
@@ -127,6 +139,12 @@
             {% endif %}
             <table>
                 <tr>
+                    <th>
+                        Answer by:
+                    </th>
+                    <td>
+                        {{ answer['user_id'] }}
+                    </td>
                     <th>
                         Submission Time:
                     </th>
@@ -171,6 +189,12 @@
                         </ul>
                         <table>
                             <tr>
+                                <th>
+                                    Comment by:
+                                </th>
+                                <td>
+                                    {{ comment['user_id'] }}
+                                </td>
                                 <th>
                                     Submission Time:
                                 </th>
