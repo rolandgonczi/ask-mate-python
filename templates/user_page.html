@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+    <title>AskMate | {{ user["username"] }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+<h1>{{ user["username"] }}</h1>
+<h2>Questions:</h2>
+    <table>
+        {% for question in questions %}
+        <tr>
+            <th>
+                Question message:
+            <th>
+            <td>
+                {{ question['message'] }}
+            </td>
+                Submission Time:
+            <td>
+                {{ question['submission_time'] }}
+            </td>
+            <th>
+                View Number:
+            </th>
+            <td>
+                {{ question['view_number'] }}
+            </td>
+            <th>
+                Vote Number:
+            </th>
+            <td>
+                {{ question['vote_number'] }}
+            </td>
+            <th>
+                Accepted:
+            </th>
+            <td>
+                {{ question['accepted'] }}
+            </td>
+        {% endfor %}
+    </table>
+<h2>Answers:</h2>
+    <table>
+        {% for answer in answers %}
+        <tr>
+            <th>
+                Answer message:
+            <th>
+            <td>
+                {{ answer['message'] }}
+            </td>
+            <th>
+                Submission Time:
+            </th>
+            <td>
+                {{ answer['submission_time'] }}
+            </td>
+            <th>
+                Vote Number:
+            </th>
+            <td>
+                {{ answer['vote_number'] }}
+            </td>
+            <th>
+                Question ID:
+            </th>
+            <td>
+                {{ answer['question_id'] }}
+            </td>
+            <th>
+                Accepted:
+            </th>
+            <td>
+                {{ answer['accepted'] }}
+            </td>
+        {% endfor %}
+    </table>
+<h2>Comments:</h2>
+    <table>
+        {% for comment in comments %}
+        <tr>
+            <th>
+                Comment message:
+            <th>
+            <td>
+                {{ comment['message'] }}
+            </td>
+            <th>
+                Submission Time:
+            </th>
+            <td>
+                {{ comment['submission_time'] }}
+            </td>
+            <th>
+                Question ID:
+            </th>
+            <td>
+                {{ comment['question_id'] }}
+            </td>
+            <th>
+                Answer ID:
+            </th>
+            <td>
+                {{ comment['answer_id'] }}
+            </td>
+            <th>
+                Edited Count:
+            </th>
+            <td>
+                {{ comment['edited_count'] }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

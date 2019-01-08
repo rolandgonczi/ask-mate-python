@@ -27,7 +27,11 @@
                     <tr>
                     {% for data in user %}
                         <td>
+                        {% if data == "username" %}
+                            <a href="{{ url_for("show_user", user_id=user["id"]) }}">{{ user[data] }}</a>
+                            {%  else %}
                             {{ user[data] }}
+                            {% endif %}
                         </td>
                     {% endfor %}
                     </tr>

@@ -318,3 +318,18 @@ def save_new_user(username, password):
 def all_user_data():
     user_data = connection.list_all_user_data()
     return user_data
+
+
+def get_user_by_user_id(user_id):
+    return connection.find_first_by_header(USER_TABLE_NAME, "id", user_id)
+
+
+def get_all_question_by_user_id(user_id):
+    return connection.find_all_by_header(QUESTION_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)
+
+
+def get_all_answer_by_user_id(user_id):
+    return connection.find_all_by_header(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)
+
+def get_all_comment_by_user_id(user_id):
+    return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)

@@ -241,6 +241,21 @@ def all_user_data():
     return render_template("list_users.html", users=data_manager.all_user_data())
 
 
+@app.route('/user/<int:user_id>')
+def show_user(user_id):
+    user = data_manager.get_user_by_user_id(user_id)
+    user.pop("password")
+    question = data_manager.get_all_question_by_user_id(user_id)
+    answers = data_manager.get_all_answer_by_user_id(user_id)
+    comments = data_manager.get_all_comment_by_user_id(user_id)
+    return render_template("user_page.html",
+                           questions=question,
+                           answers=answers,
+                           comments=comments,
+                           user=user
+                           )
+
+
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
