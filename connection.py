@@ -229,8 +229,11 @@ def delete_record_by_multiple_headers(cursor, table_name, criteria):
 
 
 @database_common.connection_handler
-def list_all_user_data(cursor, table_name, header):
+def list_all_user_data(cursor):
     cursor.execute(sql.SQL("""
-                            SELECT id, username, COUNT(answer.user_id), COUNT(question.user_id)  FROM 
-                            WHERE {criteria}
-                            """).format)
+                            SELECT id, username,
+                            (SELECT COUNT(user_id) FROM question WHERE user_id = users.id) as question_count,
+                            (SELECT COUNT(user_id) FROM answer WHERE user_id = users.id) as answer_count
+                            FROM users
+                            """))
+    return cursor.fetchall()

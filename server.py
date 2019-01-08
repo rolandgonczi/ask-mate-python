@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 import data_manager
 import sys
+import connection
 import security
 
 app = Flask(__name__)
@@ -235,6 +236,9 @@ def login():
 
             return redirect(url_for('index'))
 
+@app.route('/list_users', methods= ['GET'])
+def all_user_data():
+    return render_template("list_users.html", users=data_manager.all_user_data())
 
 
 if __name__ == '__main__':

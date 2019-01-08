@@ -9,7 +9,7 @@ QUESTION_TABLE_NAME = "question"
 ANSWER_TABLE_NAME = "answer"
 COMMENTS_TABLE_NAME = "comment"
 TAG_TABLE_NAME = "tag"
-USER_TABLE_NAME = "user"
+USER_TABLE_NAME = "users"
 QUESTION_TAG_CONNECTION_TABLE = "question_tag"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
@@ -313,3 +313,8 @@ def get_password_for_username(username):
 
 def save_new_user(username, password):
     connection.save_record_into_table(USER_TABLE_NAME, {"username": username, "password": password})
+
+
+def all_user_data():
+    user_data = connection.list_all_user_data()
+    return user_data

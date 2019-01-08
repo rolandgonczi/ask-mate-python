@@ -22,13 +22,16 @@
             <th>
                 Reputation:
             </th>
+        </tr>
             {% for user in users %}
                     <tr>
                     {% for data in user %}
                         <td>
-                            {{ data }}
+                            {{ user[data] }}
                         </td>
+                    {% endfor %}
                     </tr>
+            {% endfor %}
                 </table>
 </body>
 </html>
