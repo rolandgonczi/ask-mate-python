@@ -63,6 +63,7 @@
             <td>
                 {{ question['vote_number'] }}
             </td>
+            {% if user_id != question['user_id'] %}
             <td>
                 <table>
                     <tr>
@@ -79,6 +80,7 @@
                     </tr>
                 </table>
             </td>
+            {% endif %}
         </tr>
     </table>
     <p><a class="button" href="/question/{{ question['id'] }}/new-comment/">Add new comment</a></p>
@@ -160,6 +162,7 @@
                     <td>
                         {{ answer['vote_number'] }}
                     </td>
+                    {% if user_id != answer['user_id'] %}
                     <td>
                         <table>
                             <tr>
@@ -176,6 +179,7 @@
                             </tr>
                         </table>
                     </td>
+                    {% endif %}
                     {% if answer['accepted'] %}
                     <td>
                         ✔ Answer accepted by the owner of the question
