@@ -56,18 +56,20 @@ def list_messages():
 
 @app.route('/question/<question_id>')
 def show_question(question_id):
-    question = data_manager.get_specific_question(question_id, with_username=True)
+    question = data_manager.get_specific_question(question_id)
     answers = data_manager.get_all_answers_by_question_id(question_id)
     question_tags = data_manager.get_tags_for_question(question_id)
     question_comments = data_manager.get_comments_by_question_id(question_id)
     answer_comments = data_manager.get_answer_comments_for_answers(answers)
-    user_id = session.get('user_id', None)
+    usernames = data_manager.get_all_usernames_for_dictionaries(answers, question_comments, answer_comments, [question])
+    current_user_id = session.get('user_id', None)
     return render_template("question.html",
                            question=question, answers=answers,
                            question_comments=question_comments,
                            answer_comments=answer_comments,
                            question_tags=question_tags,
-                           user_id=user_id)
+                           user_id=current_user_id,
+                           usernames=usernames)
 
 
 @app.route('/add-question/', methods=["GET", "POST"])

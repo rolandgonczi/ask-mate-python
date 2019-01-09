@@ -43,7 +43,7 @@
                 Question by:
             </th>
             <td>
-                {{ question['username'] }}
+                {{ usernames[question['user_id']] }}
             </td>
             <th>
                 Submission Time:
@@ -100,7 +100,7 @@
                         Comment by:
                     </th>
                     <td>
-                        {{ comment['username'] }}
+                        {{ usernames[comment['user_id']] }}
                     </td>
                     <th>
                         Submission Time:
@@ -148,7 +148,7 @@
                         Answer by:
                     </th>
                     <td>
-                        {{ answer['username'] }}
+                        {{ usernames[answer['user_id']] }}
                     </td>
                     <th>
                         Submission Time:
@@ -205,7 +205,7 @@
                                     Comment by:
                                 </th>
                                 <td>
-                                    {{ comment['username'] }}
+                                    {{ usernames[comment['user_id']] }}
                                 </td>
                                 <th>
                                     Submission Time:

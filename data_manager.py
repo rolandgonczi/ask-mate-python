@@ -396,3 +396,15 @@ def modify_reputation_for_user(user_id, value):
 
 def answer_accepted(answer_id):
     return connection.find_first_by_header(ANSWER_TABLE_NAME, 'id', answer_id)['accepted']
+
+
+def get_all_usernames_for_dictionaries(*args):
+    user_ids = set()
+    for _list in args:
+        for dictionary in _list:
+            user_ids.add(dictionary.get('user_id'))
+    users = connection.find_all_by_header_multiple_values(USER_TABLE_NAME, {'id': 'ASC'}, 'id', user_ids)
+    usernames = {}
+    for user in users:
+        usernames[user['id']] = user['username']
+    return usernames

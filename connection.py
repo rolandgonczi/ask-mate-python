@@ -237,3 +237,4 @@ def list_all_user_data(cursor):
                             FROM users
                             """))
     return cursor.fetchall()
+
