@@ -408,3 +408,7 @@ def get_all_usernames_for_dictionaries(*args):
     for user in users:
         usernames[user['id']] = user['username']
     return usernames
+
+
+def count_all_tags_in_questions():
+    return connection.count_header_from_joined_tables('tag', 'question_tag', 'id', 'tag_id', 'name')

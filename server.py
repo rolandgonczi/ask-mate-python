@@ -324,6 +324,13 @@ def show_user(user_id):
                            )
 
 
+@app.route('/tags')
+def tags():
+    tags = data_manager.count_all_tags_in_questions()
+    return render_template("tags.html", tags=tags)
+
+
+
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',

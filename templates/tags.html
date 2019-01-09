@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tags</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Tags</th>
+            <th>Number of questions</th>
+        </tr>
+        {% for tag in tags %}
+        <tr>
+            <td>{{ tag['name'] }}</td>
+            <td>{{ tag['count'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

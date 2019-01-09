@@ -238,3 +238,17 @@ def list_all_user_data(cursor):
                             """))
     return cursor.fetchall()
 
+
+@database_common.connection_handler
+def count_header_from_joined_tables(cursor, table1, table2, key1, key2, group_by, count='count'):
+    cursor.execute(sql.SQL("""
+        SELECT {group_by}, COUNT({table2}.{key2}) AS {count} FROM
+        {table1} JOIN {table2} ON {table1}.{key1} = {table2}.{key2}
+        GROUP BY {group_by}
+    """).format(table1=sql.Identifier(table1),
+                table2=sql.Identifier(table2),
+                key1=sql.Identifier(key1),
+                key2=sql.Identifier(key2),
+                group_by=sql.Identifier(group_by),
+                count=sql.Identifier(count)))
+    return cursor.fetchall()
