@@ -200,21 +200,30 @@ def images(image_title):
 @app.route('/question/<int:question_id>/vote-up/')
 @need_login(post_type="any")
 def question_vote_up(question_id):
-    data_manager.change_vote_number_for_question(question_id, 1)
+    if not data_manager.vote_exists_for_question(question_id, session['user_id']):
+        data_manager.change_vote_number_for_question(question_id, 1)
+        data_manager.add_vote_to_question_from_user(question_id, session['user_id'], True)
+        data_manager.modify_reputation_for_user(session['user_id'], 5)
     return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/question/<int:question_id>/vote-down/')
 @need_login(post_type="any")
 def question_vote_down(question_id):
-    data_manager.change_vote_number_for_question(question_id, -1)
+    if not data_manager.vote_exists_for_question(question_id, session['user_id']):
+        data_manager.change_vote_number_for_question(question_id, -1)
+        data_manager.add_vote_to_question_from_user(question_id, session['user_id'], False)
+        data_manager.modify_reputation_for_user(session['user_id'], -2)
     return redirect(url_for('show_question', question_id=question_id))
 
 
 @app.route('/answer/<int:answer_id>/vote-up/')
 @need_login(post_type="any")
 def answer_vote_up(answer_id):
-    data_manager.change_vote_number_for_answer(answer_id, 1)
+    if not data_manager.vote_exists_for_answer(answer_id, session['user_id']):
+        data_manager.change_vote_number_for_answer(answer_id, 1)
+        data_manager.add_vote_to_answer_from_user(answer_id, session['user_id'], True)
+        data_manager.modify_reputation_for_user(session['user_id'], 10)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
     return redirect(url_for('show_question', question_id=question_id))
 
@@ -222,7 +231,10 @@ def answer_vote_up(answer_id):
 @app.route('/answer/<int:answer_id>/vote-down/')
 @need_login(post_type="any")
 def answer_vote_down(answer_id):
-    data_manager.change_vote_number_for_answer(answer_id, -1)
+    if not data_manager.vote_exists_for_answer(answer_id, session['user_id']):
+        data_manager.change_vote_number_for_answer(answer_id, -1)
+        data_manager.add_vote_to_answer_from_user(answer_id, session['user_id'], False)
+        data_manager.modify_reputation_for_user(session['user_id'], -2)
     question_id = data_manager.get_question_for_answer_from_id((answer_id))['id']
     return redirect(url_for('show_question', question_id=question_id))
 
@@ -261,7 +273,9 @@ def delete_tag_from_question(question_id, tag_id):
 @app.route('/answer/<int:question_id>/<int:answer_id>/accept')
 @need_login(post_type="question")
 def accept_answer(question_id, answer_id):
-    data_manager.set_answer_as_accepted(answer_id)
+    if not data_manager.answer_accepted(answer_id):
+        data_manager.set_answer_as_accepted(answer_id)
+        data_manager.modify_reputation_for_user(session['user_id'], 15)
     return redirect(url_for('show_question', question_id=question_id))
 
 @app.route('/login', methods= ['GET', 'POST'])

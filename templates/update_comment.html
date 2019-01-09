@@ -9,7 +9,7 @@
     <form action="/comment/{{ comment['id'] }}/edit" method="post">
         <p><label>
             Comment<br>
-            <textarea rows="4" cols="40" name="message">{{ comment["message"] }}</textarea>
+            <textarea rows="4" cols="40" name="message" required>{{ comment["message"] }}</textarea>
         </label></p>
         <p><label>
             <input type="submit" value="Update comment">

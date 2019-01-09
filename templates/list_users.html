@@ -25,15 +25,21 @@
         </tr>
             {% for user in users %}
                     <tr>
-                    {% for data in user %}
                         <td>
-                        {% if data == "username" %}
-                            <a href="{{ url_for("show_user", user_id=user["id"]) }}">{{ user[data] }}</a>
-                            {%  else %}
-                            {{ user[data] }}
-                            {% endif %}
+                            {{ user["id"] }}
                         </td>
-                    {% endfor %}
+                        <td>
+                            <a href="{{ url_for("show_user", user_id=user["id"]) }}">{{ user["username"] }}</a>
+                        </td>
+                        <td>
+                            {{ user["question_count"] }}
+                        </td>
+                        <td>
+                            {{ user["answer_count"] }}
+                        </td>
+                        <td>
+                            {{ user["reputation"] }}
+                        </td>
                     </tr>
             {% endfor %}
                 </table>

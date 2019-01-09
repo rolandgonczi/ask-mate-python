@@ -11,7 +11,7 @@
     <form action="/answer/{{ answer['id'] }}/edit" method="post">
         <p><label>
             Answer<br>
-            <textarea rows="4" cols="40" name="message">{{ answer["message"] }}</textarea>
+            <textarea rows="4" cols="40" name="message" required>{{ answer["message"] }}</textarea>
         </label></p>
         <p><label>
             <input type="submit" value="Update answer">

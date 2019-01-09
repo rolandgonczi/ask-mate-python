@@ -11,6 +11,8 @@ COMMENTS_TABLE_NAME = "comment"
 TAG_TABLE_NAME = "tag"
 USER_TABLE_NAME = "users"
 QUESTION_TAG_CONNECTION_TABLE = "question_tag"
+USER_QUESTION_VOTE_TABLE_NAME = "user_question_vote"
+USER_ANSWER_VOTE_TABLE_NAME = "user_answer_vote"
 QUESTIONS_HEADER = ["id", "submission_time", "view_number", "vote_number", "title", "message", "image"]
 ANSWERS_HEADER = ["id", "submission_time", "vote_number", "question_id", "message", "image"]
 COMMENTS_HEADER = ["id", "question_id", "answer_id", "message", "submission_time", "edited_count"]
@@ -362,8 +364,35 @@ def get_all_question_by_user_id(user_id):
 def get_all_answer_by_user_id(user_id):
     return connection.find_all_by_header(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)
 
+
 def get_all_comment_by_user_id(user_id):
     return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)
 
+
 def set_answer_as_accepted(answer_id):
     connection.update_record_in_database(ANSWER_TABLE_NAME, {"accepted": True}, answer_id, "id")
+
+
+def add_vote_to_question_from_user(question_id, user_id, vote=True):
+    connection.save_record_into_table(USER_QUESTION_VOTE_TABLE_NAME, {"user_id": user_id, "question_id": question_id, "vote": vote})
+
+
+def add_vote_to_answer_from_user(answer_id, user_id, vote=True):
+    connection.save_record_into_table(USER_ANSWER_VOTE_TABLE_NAME, {"user_id": user_id, "answer_id": answer_id, "vote": vote})
+
+
+def vote_exists_for_question(question_id, user_id):
+    return connection.find_first_by_multiple_headers(USER_QUESTION_VOTE_TABLE_NAME, {'question_id': question_id, "user_id": user_id})
+
+
+def vote_exists_for_answer(answer_id, user_id):
+    return connection.find_first_by_multiple_headers(USER_ANSWER_VOTE_TABLE_NAME, {'answer_id': answer_id, "user_id": user_id})
+
+
+def modify_reputation_for_user(user_id, value):
+    reputation = connection.find_first_by_header(USER_TABLE_NAME, 'id', user_id)['reputation']
+    connection.update_record_in_database(USER_TABLE_NAME, {'reputation': reputation + value}, user_id, 'id')
+
+
+def answer_accepted(answer_id):
+    return connection.find_first_by_header(ANSWER_TABLE_NAME, 'id', answer_id)['accepted']
