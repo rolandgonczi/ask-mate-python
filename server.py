@@ -56,7 +56,7 @@ def list_messages():
 
 @app.route('/question/<question_id>')
 def show_question(question_id):
-    question = data_manager.get_specific_question(question_id)
+    question = data_manager.get_specific_question(question_id, with_username=True)
     answers = data_manager.get_all_answers_by_question_id(question_id)
     question_tags = data_manager.get_tags_for_question(question_id)
     question_comments = data_manager.get_comments_by_question_id(question_id)
@@ -257,6 +257,12 @@ def delete_tag_from_question(question_id, tag_id):
     data_manager.delete_specific_tag_from_question(question_id, tag_id)
     return redirect(url_for('show_question', question_id=question_id))
 
+
+@app.route('/answer/<int:question_id>/<int:answer_id>/accept')
+@need_login(post_type="question")
+def accept_answer(question_id, answer_id):
+    data_manager.set_answer_as_accepted(answer_id)
+    return redirect(url_for('show_question', question_id=question_id))
 
 @app.route('/login', methods= ['GET', 'POST'])
 def login():

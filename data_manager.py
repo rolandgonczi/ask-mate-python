@@ -35,21 +35,24 @@ def get_all_answers():
     return connection.read_all(ANSWER_TABLE_NAME, ORDER_BY_DEFAULT)
 
 
-def get_specific_question(question_id):
+def get_specific_question(question_id, with_username=False):
     question = connection.find_first_by_header(QUESTION_TABLE_NAME, "id", question_id)
-    question["username"] = get_username_by_user_id(question["user_id"])
+    if with_username:
+        question["username"] = get_username_by_user_id(question["user_id"])
     return question
 
 
-def get_specific_answer(answer_id):
+def get_specific_answer(answer_id, with_username=False):
     answer = connection.find_first_by_header(ANSWER_TABLE_NAME, "id", answer_id)
-    answer["username"] = get_username_by_user_id(answer["user_id"])
+    if with_username:
+        answer["username"] = get_username_by_user_id(answer["user_id"])
     return answer
 
 
-def get_specific_comment(comment_id):
+def get_specific_comment(comment_id, with_username=False):
     comment = connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", comment_id)
-    comment["username"] = get_username_by_user_id(comment["user_id"])
+    if with_username:
+        comment["username"] = get_username_by_user_id(comment["user_id"])
     return comment
 
 
@@ -361,3 +364,6 @@ def get_all_answer_by_user_id(user_id):
 
 def get_all_comment_by_user_id(user_id):
     return connection.find_all_by_header(COMMENTS_TABLE_NAME, ORDER_BY_DEFAULT, "user_id", user_id)
+
+def set_answer_as_accepted(answer_id):
+    connection.update_record_in_database(ANSWER_TABLE_NAME, {"accepted": True}, answer_id, "id")

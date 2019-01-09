@@ -129,6 +129,9 @@
                 <a class="button delete" href="/answer/{{ answer['id'] }}/delete">❌</a>
             </p>
             {% endif %}
+            {% if user_id == question['user_id'] and answer['accepted'] == False %}
+                <a class="button accept" href="{{ url_for('accept_answer', question_id=question['id'], answer_id=answer['id']) }}">✔️</a>
+            {% endif %}
             <div class="message answer">
                 <p>{{ answer['message'] }}</p>
             </div>
@@ -173,6 +176,11 @@
                             </tr>
                         </table>
                     </td>
+                    {% if answer['accepted'] %}
+                    <td>
+                        ✔ Answer accepted by the owner of the question
+                    </td>
+                    {% endif %}
                 </tr>
             </table>
             <a class="button" href="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}">Comment answer</a>
