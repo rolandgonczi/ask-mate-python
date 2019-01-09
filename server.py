@@ -200,7 +200,8 @@ def images(image_title):
 @app.route('/question/<int:question_id>/vote-up/')
 @need_login(post_type="any")
 def question_vote_up(question_id):
-    if not data_manager.vote_exists_for_question(question_id, session['user_id']):
+    if not data_manager.vote_exists_for_question(question_id, session['user_id'])\
+            and data_manager.get_user_id_for_question(question_id) != session['user_id']:
         data_manager.change_vote_number_for_question(question_id, 1)
         data_manager.add_vote_to_question_from_user(question_id, session['user_id'], True)
         data_manager.modify_reputation_for_user(session['user_id'], 5)
@@ -210,7 +211,8 @@ def question_vote_up(question_id):
 @app.route('/question/<int:question_id>/vote-down/')
 @need_login(post_type="any")
 def question_vote_down(question_id):
-    if not data_manager.vote_exists_for_question(question_id, session['user_id']):
+    if not data_manager.vote_exists_for_question(question_id, session['user_id'])\
+            and data_manager.get_user_id_for_question(question_id) != session['user_id']:
         data_manager.change_vote_number_for_question(question_id, -1)
         data_manager.add_vote_to_question_from_user(question_id, session['user_id'], False)
         data_manager.modify_reputation_for_user(session['user_id'], -2)
@@ -220,7 +222,8 @@ def question_vote_down(question_id):
 @app.route('/answer/<int:answer_id>/vote-up/')
 @need_login(post_type="any")
 def answer_vote_up(answer_id):
-    if not data_manager.vote_exists_for_answer(answer_id, session['user_id']):
+    if not data_manager.vote_exists_for_answer(answer_id, session['user_id'])\
+            and data_manager.get_user_id_for_answer(answer_id) != session['user_id']:
         data_manager.change_vote_number_for_answer(answer_id, 1)
         data_manager.add_vote_to_answer_from_user(answer_id, session['user_id'], True)
         data_manager.modify_reputation_for_user(session['user_id'], 10)
@@ -231,7 +234,8 @@ def answer_vote_up(answer_id):
 @app.route('/answer/<int:answer_id>/vote-down/')
 @need_login(post_type="any")
 def answer_vote_down(answer_id):
-    if not data_manager.vote_exists_for_answer(answer_id, session['user_id']):
+    if not data_manager.vote_exists_for_answer(answer_id, session['user_id'])\
+            and data_manager.get_user_id_for_answer(answer_id) != session['user_id']:
         data_manager.change_vote_number_for_answer(answer_id, -1)
         data_manager.add_vote_to_answer_from_user(answer_id, session['user_id'], False)
         data_manager.modify_reputation_for_user(session['user_id'], -2)
