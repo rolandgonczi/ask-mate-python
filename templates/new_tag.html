@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ask Mate | Add new tag</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <p><a class="button" href="{{url_for('show_question', question_id=question_id)}}">Back to Question</a></p>
     <form action="{{ url_for('new_tag_for_question', question_id = question_id ) }}" method="POST">
         <label>
@@ -23,5 +19,4 @@
         </label>
         <input type="submit" value="Add tag">
     </form>
-</body>
-</html>
+{% endblock %}

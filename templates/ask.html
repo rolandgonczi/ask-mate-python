@@ -1,10 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <title>AskMate | Ask a new question</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <h1>Ask a new question</h1>
     <form action="/add-question/" method="post" enctype="multipart/form-data">
         <p><label>
@@ -23,5 +19,4 @@
             <input type="submit" value="Submit question" name="submit">
         </label></p>
     </form>
-</body>
-</html>
+{% endblock %}

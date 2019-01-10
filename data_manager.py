@@ -265,7 +265,6 @@ def get_question_id_for_comment(comment):
     return question_id
 
 
-
 def add_new_question(form, files, user_id):
     question = {}
     for key in form:
@@ -294,6 +293,7 @@ def add_new_answer(form, files, question_id, user_id):
         answer["image"] = generate_answer_image_file_name(files['image'])
         save_answer_image(files['image'], answer["image"])
     save_new_answer(answer)
+
 
 def add_new_comment(form, user_id, question_id=None, answer_id=None):
     comment = {}
@@ -347,6 +347,7 @@ def get_user_id_for_answer(answer_id):
 
 def get_user_id_for_comment(comment_id):
     return connection.find_first_by_header(COMMENTS_TABLE_NAME, "id", comment_id)['user_id']
+
 
 def all_user_data():
     user_data = connection.list_all_user_data()

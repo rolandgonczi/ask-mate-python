@@ -1,10 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <title>AskMate | New answer to {{ question["title"] }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <h1>Add a new answer to {{ question["title"] }}</h1>
     <p>{{ question['message'] }}</p>
     <form action="/question/{{ question['id'] }}/new-answer/" method="post" enctype="multipart/form-data">
@@ -20,5 +16,4 @@
             <input type="submit" value="Submit answer" name="submit">
         </label></p>
     </form>
-</body>
-</html>
+{% endblock %}

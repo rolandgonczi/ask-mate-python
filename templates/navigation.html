@@ -1,7 +1,19 @@
 <div class="navigation">
-    <a href="{{url_for('login')}}" class="button">Login/Register</a>
     <a href="{{url_for('list_messages')}}" class="button">Browse questions</a>
     <a href="{{url_for('all_user_data')}}" class="button">Users</a>
     <a href="{{url_for('tags')}}" class="button">Tags</a>
-
+    <div class="inline">
+        <form action="{{ url_for('search') }}" method="get" name="search" target="_blank">
+            <label>Search:<input type="text" name="search" required></label>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+    <div class="user">
+        {% if current_user %}
+            <a href="{{ url_for('show_user', user_id=current_user['id'])}}" class="button">User page: {{ current_user['username'] }}</a>
+            <a href="{{ url_for('logout') }}" class="button">Logout</a>
+        {% else %}
+            <a href="{{url_for('login')}}" class="button">Login/Register</a>
+        {% endif %}
+    </div>
 </div>

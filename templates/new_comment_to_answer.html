@@ -1,10 +1,6 @@
-<!doctype html>
-<html>
-<head>
-    <title>AskMate | New comment to answer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <h1>Add a new comment to answer:</h1>
     <p>{{ answer['message'] }}</p>
     <form action="{{ url_for('new_comment_to_specific_answer', answer_id=answer['id'])}}" method="post" enctype="multipart/form-data">
@@ -16,5 +12,4 @@
             <input type="submit" value="Submit comment" name="submit">
         </label></p>
     </form>
-</body>
-</html>
+{% endblock %}

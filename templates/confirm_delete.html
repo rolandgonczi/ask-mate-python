@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ask Mate | Confirm Comment Deletion</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block content %}
     <h1>Confirm comment deletion</h1>
     <div class="confirm-delete">
         <form id="cancel" method="get" action="{{ url_for('show_question', question_id=question_id) }}"><input type="submit" value="CANCEL"></form>
         <form id="confirm" method="post"><input type="submit" value="CONFIRM"></form>
     </div>
-</body>
-</html>
+{% endblock %}

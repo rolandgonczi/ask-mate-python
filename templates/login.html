@@ -1,34 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>AskMate | Login</title>
-    <link rel="stylesheet" href="/static/css/main.css">
-</head>
+{% extends "layout.html" %}
 
+{% block content %}
 <h1>AskMate | Login</h1>
+<div class="center">
+    <div class="card">
+        <h2>Login</h2>
+        <form action="{{ url_for("login") }}" method="POST" id="login">
+            <p><input type="text" name="username" placeholder="Username" minlength="1" maxlength="32" required></p>
+            <p><input type="password" name="password" placeholder="Password" minlength="6" required></p>
+            <p><button type="submit" form="login" name="form" value="login">Login</button></p>
+            <input type="hidden" value="{{ request.args.get('next', url_for('index')) }}" name="next">
+        </form>
 
-<div class="card">
-    <h2>Login</h2>
-    <form action="{{ url_for("login") }}" method="POST" id="login">
-        <p><input type="text" name="username" placeholder="Username" minlength="1" maxlength="32" required></p>
-        <p><input type="password" name="password" placeholder="Password" minlength="6" required></p>
-        <p><button type="submit" form="login" name="form" value="login">Login</button></p>
-    </form>
+        {% if invalid %}
+        <p>Username or Password is invalid.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>Registration</h2>
+        <form action="{{ url_for("login") }}" method="POST" id="register">
+            <p><input type="text" name="username" placeholder="Username" minlength="1" maxlength="32" required></p>
+            <p><input type="password" name="password" placeholder="Password" minlength="6" required></p>
+            <p><button type="submit" form="register" name="form" value="register">Register</button></p>
+            <input type="hidden" value="{{ request.args.get('next', url_for('index')) }}" name="next">
+        </form>
+    </div>
 </div>
-
-{% if invalid %}
-<p>Username or Password is invalid.</p>
-{% endif %}
-
-<div class="card">
-    <h2>Registration</h2>
-    <form action="{{ url_for("login") }}" method="POST" id="register">
-        <p><input type="text" name="username" placeholder="Username" minlength="1" maxlength="32" required></p>
-        <p><input type="password" name="password" placeholder="Password" minlength="6" required></p>
-        <p><button type="submit" form="register" name="form" value="register">Register</button></p>
-    </form>
-</div>
-
-</body>
-</html>
+{% endblock %}
