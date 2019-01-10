@@ -321,7 +321,8 @@ def show_user(user_id):
                            questions=question,
                            answers=answers,
                            comments=comments,
-                           user=user
+                           user=user,
+                           page_title=" | {}".format([user['username']])
                            )
 
 
@@ -329,6 +330,11 @@ def show_user(user_id):
 def tags():
     tags = data_manager.count_all_tags_in_questions()
     return render_template("tags.html", tags=tags)
+
+
+@app.route('/answer/<int:answer_id>')
+def answer(answer_id):
+    return redirect(url_for('show_question', question_id=data_manager.get_question_id_by_answer_id(answer_id)))
 
 
 
