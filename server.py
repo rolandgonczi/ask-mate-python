@@ -39,7 +39,8 @@ def index():
     return render_template("list.html", questions=questions,
                            headers=data_manager.QUESTIONS_HEADER,
                            nice_headers=data_manager.QUESTIONS_HEADER_NICE,
-                           index_page=True)
+                           index_page=True,
+                           page_title=" Home Page")
 
 
 @app.route('/list/')
