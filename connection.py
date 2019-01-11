@@ -235,6 +235,7 @@ def list_all_user_data(cursor):
                             (SELECT COUNT(user_id) FROM question WHERE user_id = users.id) as question_count,
                             (SELECT COUNT(user_id) FROM answer WHERE user_id = users.id) as answer_count
                             FROM users
+                            ORDER BY username
                             """))
     return cursor.fetchall()
 
