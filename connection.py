@@ -1,4 +1,4 @@
-import csv
+
 import util
 import database_common
 from psycopg2 import sql
